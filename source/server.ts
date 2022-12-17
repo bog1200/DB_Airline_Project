@@ -1,7 +1,7 @@
 import http from 'http';
 import express, { Express } from 'express';
 import morgan from 'morgan';
-import v1 from './routes/v1';
+import v1 from './v1';
 
 const router: Express = express();
 
@@ -20,7 +20,7 @@ router.use((req, res, next) => {
     res.header('Access-Control-Allow-Headers', 'origin, X-Requested-With,Content-Type,Accept, Authorization');
     // set the CORS method headers
     if (req.method === 'OPTIONS') {
-        res.header('Access-Control-Allow-Methods', 'GET PATCH DELETE POST');
+        res.header('Access-Control-Allow-Methods', 'GET DELETE POST');
         return res.status(200).json({});
     }
     next();
@@ -31,9 +31,9 @@ router.use('/api/v1/', v1);
 
 /** Error handling */
 router.use((req, res, next) => {
-    console.log(req);
+    // console.log(req);
     const error = new Error('not found');
-    return res.status(401).json({
+    return res.status(404).json({
         message: error.message
     });
 });
