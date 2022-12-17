@@ -18,6 +18,8 @@ pool.on('error', (err: any) => {
 
 
 function query(query: string, values?: any) {
+    console.log(`[SQL] : ${query}`);
+    console.log(`[SQL] : ${values}`);
     return new Promise((resolve, reject) => {
         pool.getConnection((err: any, connection: any) => {
             if (err) {
