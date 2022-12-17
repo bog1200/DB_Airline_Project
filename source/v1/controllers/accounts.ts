@@ -42,8 +42,8 @@ const getAccount = (req: Request, res: Response, next: NextFunction) => {
                 return res.status(404).json({
                     message: 'No valid entry found for provided ID'
                 });
-            res.status(200).json(result[0]);
             }
+            res.status(200).json(result[0]);
         })
         .catch((err: any) => {
             console.log(err);
