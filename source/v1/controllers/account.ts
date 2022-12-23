@@ -2,7 +2,7 @@
 
 import { Request, Response, NextFunction } from 'express';
 import { query } from '../../database'; //connect to the database
-import Account from '../interfaces/account'; //import the interface
+import Account from '../interfaces/Account'; //import the interface
 import bcrypt from 'bcrypt'; //password encryption
 
 /**
