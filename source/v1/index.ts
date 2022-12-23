@@ -3,7 +3,7 @@
 import express from 'express';
 const router = express.Router();
 
-import accounts from './routes/accounts';
+import accounts from './routes/account';
 
 
 router.use('/accounts', accounts);
