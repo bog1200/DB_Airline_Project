@@ -6,7 +6,7 @@ interface Employee {
     last_name: string;
     phone: string;
     email: string;
-    job_id: Job;
-    crew_id: FlightCrew;
+    job_id: number |  Job;
+    crew_id: number |  FlightCrew;
 }
 export = Employee;
