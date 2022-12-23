@@ -4,9 +4,10 @@ import express from 'express';
 const router = express.Router();
 
 import accounts from './routes/account';
+import flights from './routes/flight';
 
 
 router.use('/accounts', accounts);
-
+router.use('/flights', flights);
 
 export = router;
