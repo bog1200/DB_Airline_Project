@@ -2,6 +2,8 @@ import http from 'http';
 import express, { Express } from 'express';
 import morgan from 'morgan';
 import v1 from './v1';
+import v1docs from './v1/docs';
+
 
 const router: Express = express();
 
@@ -28,6 +30,7 @@ router.use((req, res, next) => {
 
 /** Routes */
 router.use('/api/v1/', v1);
+router.use('/api/v1/docs',v1docs);
 
 /** Error handling */
 router.use((req, res, next) => {
