@@ -31,6 +31,7 @@ function query(query: string, values?: any) {
                     if (err) {
                         reject(err);
                     } else {
+                        console.log(results);
                         resolve(results);
                     }
                 });

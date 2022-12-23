@@ -1,5 +1,5 @@
 import Country from "./Country";
-
+import Flight from "./Flight";
 interface Passenger {
     id: number;
     flight_id: Flight;
