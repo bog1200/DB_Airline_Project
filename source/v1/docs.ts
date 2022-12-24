@@ -11,41 +11,31 @@ const router = express.Router();
  *          message:
  *              type: string
  *              description: The error message
- *              example: 'Not found'
  *              required: true
  *              nullable: false
- *              default: 'Not found'
+ *
  *
  */
 //generate swagger.json
 import swaggerJSDoc from 'swagger-jsdoc';
 const options = {
     definition: {
-        openapi: '3.0.2',
+        openapi: '3.0.3',
         failOnErrors: true,
         info: {
             title: 'DB Airlines API',
-            version: '0.0.1',
+            version: '1',
             description: 'This is the documentation for the API',
         },
         servers: [
             {
-                url: 'https://dbairlines.romail.app',
+                url: 'https://dbairlines.romail.app/api/v1',
                 description: 'Production server',
-                enabled: false,
             },
             {
-                url: 'http://localhost:6060/',
+                url: 'http://localhost:6060/api/v1',
                 description: 'Local server',
 
-            },
-            {
-                url: 'https://dbairlines.romail.app/ch101',
-                description: 'Chrisharris101 server',
-            },
-            {
-                url: 'https://dbairlines.romail.app/xcr',
-                description: 'XCriwn server',
             }
         ],
     },

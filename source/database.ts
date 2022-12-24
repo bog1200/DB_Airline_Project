@@ -1,5 +1,6 @@
 import mysql from 'mysql';
 import dotenv from 'dotenv';
+import { v4 as uuidv4 } from 'uuid';
 dotenv.config();
 
 const pool = mysql.createPool({
@@ -18,8 +19,9 @@ pool.on('error', (err: any) => {
 
 
 function query(query: string, values?: any) {
-    console.log(`[SQL] : ${query}`);
-    console.log(`[SQL] : ${values}`);
+    const queryId = uuidv4();
+    console.log(`[SQL] (${queryId}): ${query} => ${values}`);
+
     return new Promise((resolve, reject) => {
         pool.getConnection((err: any, connection: any) => {
             if (err) {
@@ -31,7 +33,7 @@ function query(query: string, values?: any) {
                     if (err) {
                         reject(err);
                     } else {
-                        console.log(results);
+                        console.log(`[SQL] (${queryId}): ` + JSON.stringify(results));
                         resolve(results);
                     }
                 });
