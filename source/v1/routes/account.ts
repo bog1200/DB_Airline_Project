@@ -9,5 +9,6 @@ const router = express.Router();
 router.get('/', controller.getAccount);
 router.post("/", controller.addAccount);
 router.post("/login/", controller.loginAccount);
+router.delete("/", controller.deleteAccount);
 
 export = router;

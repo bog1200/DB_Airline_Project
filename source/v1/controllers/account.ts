@@ -4,11 +4,12 @@ import { Request, Response, NextFunction } from 'express';
 import { query } from '../../database'; //connect to the database
 import Account from '../interfaces/Account'; //import the interface
 import bcrypt from 'bcrypt'; //password encryption
+import {v4 as uuidv4} from 'uuid'; //unique account id
 
 /**
  * @openapi
  * paths:
- *   /api/v1/accounts:
+ *   /accounts:
  *     post:
  *       summary: Create an account
  *       tags:
@@ -18,7 +19,12 @@ import bcrypt from 'bcrypt'; //password encryption
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/NewAccount'
+ *               $ref: '#/components/schemas/Account'
+ *             example:
+ *               email: "johndoe@example.com"
+ *               password: "1234"
+ *               first_name: "John"
+ *               last_name: "Doe"
  *       responses:
  *         '201':
  *           description: Account created
@@ -48,61 +54,63 @@ import bcrypt from 'bcrypt'; //password encryption
 
 
 const addAccount = (req: Request, res: Response, next: NextFunction) => {
-    //hash the password
-    const saltRounds = 10;
-    const salt = bcrypt.genSaltSync(saltRounds);
-    const hash = bcrypt.hashSync(req.body.password, salt);
-    req.body.password = hash;
-    //create the account
     if (!req.body.email || !req.body.password || !req.body.first_name || !req.body.last_name) {
         return res.status(400).json({
             message: 'Email, password, first name, and last name are required'
         });
     }
-    const account: Account = {
-        email: req.body.email,
-        password: req.body.password,
-        first_name: req.body.first_name,
-        last_name: req.body.last_name,
-    };
-    query(`SELECT ID FROM ACCOUNT WHERE email = ?`, [account.email])
+    query(`SELECT ID FROM ACCOUNT WHERE email = ?`, [req.body.email])
         .then((result: any) => {
             if (result.length > 0) {
                 return res.status(409).json({
                     message: 'Email already exists'
                 });
             }
-            query(`INSERT INTO ACCOUNT (email, password, first_name, last_name) VALUES (?, ?, ?, ?)`, [account.email, account.password, account.first_name, account.last_name])
+            const hash = bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10));
+
+            const account: Account = {
+                uuid: uuidv4(),
+                email: req.body.email,
+                password: hash,
+                first_name: req.body.first_name,
+                last_name: req.body.last_name,
+            };
+
+            query(`INSERT INTO ACCOUNT (email, uuid, password, first_name, last_name) VALUES (?, ?, ?, ?, ?)`, [account.email, account.uuid, account.password, account.first_name, account.last_name])
                 .then((result: any) => {
-                    return res.status(201).json({
-                        message: 'Account created',
-                        account: account
-                    });
+                    return res.status(201).json({message: 'Account created'});
                 })
                 .catch((err: any) => {
                     console.log(err);
-                    res.status(500).json({
+                    return res.status(500).json({
                         error: err
                     });
                 });
+        })
+        .catch((err: any) => {
+            console.log(err);
+            return res.status(500).json({
+                error: err
+            });
         });
 }
 
 /**
  * @openapi
  * paths:
- *     /api/v1/accounts:
+ *     /accounts:
  *         get:
- *             summary: Get an account by id
+ *             summary: Get an account by uuid
  *             tags:
  *                 - accounts
  *             parameters:
  *                 - in: query
- *                   name: id
+ *                   name: uuid
  *                   schema:
- *                     type: integer
+ *                     type: string
+ *                     format: uuid
  *                     required: true
- *                     description: The id of the account
+ *                     description: The uuid of the account
  *             responses:
  *                 '200':
  *                     description: A account object
@@ -124,12 +132,12 @@ const addAccount = (req: Request, res: Response, next: NextFunction) => {
  *                                 $ref: '#/components/schemas/Error'
  */
 const getAccount = (req: Request, res: Response, next: NextFunction) => {
-    const id = req.query.id;
-    query('SELECT id, first_name, last_name FROM ACCOUNT WHERE id = ?', [id])
+    const uuid = req.query.uuid;
+    query('SELECT uuid, first_name, last_name FROM ACCOUNT WHERE uuid = ?', [uuid])
         .then((result: any) => {
             if (result.length == 0) {
                 return res.status(404).json({
-                    message: 'No valid entry found for provided ID'
+                    message: 'No valid entry found for provided uuid'
                 });
             }
             res.status(200).json(result[0]);
@@ -145,17 +153,17 @@ const getAccount = (req: Request, res: Response, next: NextFunction) => {
 /**
  * @openapi
  * paths:
- *   /api/v1/accounts/login:
+ *   /accounts/login:
  *     post:
  *       summary: Login to an account
  *       tags:
- *         - accounts
+ *         - login
  *       requestBody:
  *         required: true
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Login'
+ *               $ref: '#/components/schemas/Account'
  *             example:
  *               email:
  *               password:
@@ -207,7 +215,7 @@ const loginAccount = (req: Request, res: Response, next: NextFunction) => {
                 });
             }
              const account: Account = {
-                id: result[0].id,
+                uuid: result[0].uuid,
                 email: result[0].email,
                 first_name: result[0].first_name,
                 last_name: result[0].last_name,
@@ -226,45 +234,62 @@ const loginAccount = (req: Request, res: Response, next: NextFunction) => {
         });
 }
 
-    // const loginAccount = (req: Request, res: Response, next: NextFunction) => {
-    //     const email = req.body.email;
-    //     const password = req.body.password;
-    // if(email && password) {
-    //     query('SELECT * FROM ACCOUNT WHERE email = ?', [email])
-    //         .then((result: any) => {
-    //             if (result.length > 0) {
-    //                 const account: Account = {
-    //                     id: result[0].ID,
-    //                     email: result[0].EMAIL,
-    //                     first_name: result[0].FIRST_NAME,
-    //                     last_name: result[0].LAST_NAME,
-    //                 };
-    //                 if (bcrypt.compareSync(password, <string>result[0].PASSWORD)) {
-    //                     res.status(200).json({
-    //                         message: 'Authentication successful',
-    //                         account: account
-    //                     });
-    //                 } else {
-    //                     res.status(401).json({
-    //                         message: 'Authentication failed'
-    //                     });
-    //                 }
-    //             } else {
-    //                 res.status(401).json({
-    //                     message: 'Authentication failed'
-    //                 });
-    //             }
-    //         })
-    //         .catch((err: any) => {
-    //             console.log(err);
-    //             res.status(500).json({
-    //                 error: err
-    //             });
-    //         });
-    // } else {
-    //     res.status(401).json({
-    //         message: 'Authentication failed'
-    //     });
-    // }
+/**
+ * @openapi
+ * paths:
+ *     /accounts:
+ *         delete:
+ *             summary: Delete an account by uuid
+ *             tags:
+ *                 - accounts
+ *             parameters:
+ *                 - in: query
+ *                   name: uuid
+ *                   required: true
+ *                   schema:
+ *                     type: string
+ *                     format: uuid
+ *                     description: The uuid of the account
+ *             responses:
+ *                 '200':
+ *                     description: Account deleted
+ *                     content:
+ *                       application/json:
+ *                         schema:
+ *                           $ref: '#/components/schemas/Error'
+ *                 '404':
+ *                     description: No account found
+ *                     content:
+ *                         application/json:
+ *                             schema:
+ *                                 $ref: '#/components/schemas/Error'
+ *                 '500':
+ *                     description: Server error
+ *                     content:
+ *                         application/json:
+ *                             schema:
+ *                                 $ref: '#/components/schemas/Error'
+ */
+const deleteAccount = (req: Request, res: Response, next: NextFunction) => {
+    const uuid = req.query.uuid;
+    query('DELETE FROM ACCOUNT WHERE uuid = ?', [uuid])
+        .then((result: any) => {
+            if(result.affectedRows == 0) {
+                return res.status(404).json({
+                    message: 'No valid entry found for provided uuid'
+                });
+            }
+            res.status(200).json({
+                message: 'Account deleted'
+            });
+        })
+        .catch((err: any) => {
+            console.log(err);
+            res.status(500).json({
+                error: err
+            });
+        });
+}
 
-export default { addAccount, getAccount, loginAccount };
+
+export default { addAccount, getAccount, loginAccount, deleteAccount };
