@@ -3,8 +3,8 @@ import controller from "../controllers/airport";
 const router = express.Router();
 
 router.get("/search", controller.searchAirports);
-router.get("/:id", controller.getAirport);
+router.get("/", controller.getAirport);
 router.post("/", controller.addAirport);
-router.delete("/:id", controller.deleteAirport);
+router.delete("/", controller.deleteAirport);
 
 export = router;
