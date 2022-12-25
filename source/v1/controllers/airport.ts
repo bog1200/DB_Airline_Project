@@ -159,7 +159,7 @@ const searchAirports = (req: Request, res: Response, next: NextFunction) => {
     }
 
 
-    query(sql, [params]).then ((result: any) => {
+    query(sql, params).then ((result: any) => {
         if (result.length == 0) {
             res.status(404).json({
                 message: 'Airport not found'
