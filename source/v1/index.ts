@@ -6,12 +6,14 @@ const router = express.Router();
 import accounts from './routes/account';
 import flights from './routes/flight';
 import airports from './routes/airport';
+import account_cards from './routes/account_card';
 import airport_gates from './routes/airport_gate';
 
 
 router.use('/accounts', accounts);
 router.use('/flights', flights);
 router.use('/airports', airports);
+router.use('/account/cards', account_cards);
 router.use('/airport/gates', airport_gates);
 
 export = router;
