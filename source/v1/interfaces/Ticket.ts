@@ -1,11 +1,8 @@
-import Account from "./Account";
-import Passenger from "./Ticket";
-import Flight from "./Flight";
 interface Ticket {
     id?: number;
     code?: string;
-    account_id?: number | Account;
-    passenger_id?: number | Passenger;
-    flight_id?: number | Flight;
+    account_id?: number;
+    passenger_id?: number;
+    flight_id?: number ;
 }
 export = Ticket;

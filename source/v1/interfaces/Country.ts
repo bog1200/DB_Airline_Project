@@ -1,5 +1,5 @@
 interface Country {
-    id: number;
+    id?: number;
     icao: string;
     name: string;
 }

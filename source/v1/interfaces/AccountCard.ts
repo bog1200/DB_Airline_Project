@@ -1,8 +1,6 @@
-import Account from "./Account";
-
 interface AccountCard {
-    id: number;
-    account_id: Account | number;
+    id?: number;
+    account_id: number;
     cardholder_first_name: string;
     cardholder_last_name: string;
     card_number: string;

@@ -1,12 +1,10 @@
-import Job from "./Job";
-import FlightCrew from "./FlightCrew";
 interface Employee {
-    id: number;
+    id?: number;
     first_name: string;
     last_name: string;
     phone: string;
     email: string;
-    job_id: number |  Job;
-    crew_id: number |  FlightCrew;
+    job_id: number;
+    crew_id: number;
 }
 export = Employee;

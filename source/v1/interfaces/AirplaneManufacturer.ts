@@ -1,5 +1,5 @@
 interface AirplaneManufacturer {
-    id: number;
+    id?: number;
     name: string;
 }
 export = AirplaneManufacturer;

@@ -1,8 +1,6 @@
-import Ticket from "./Ticket";
-import AccountCard from "./AccountCard";
 interface TicketPaymentCard {
     id?: number;
-    ticket_id?: number | Ticket;
-    card_id?: number | AccountCard;
+    ticket_id?: number;
+    card_id?: number;
 }
 export = TicketPaymentCard;

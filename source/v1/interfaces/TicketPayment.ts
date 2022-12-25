@@ -1,9 +1,7 @@
-import TicketPaymentMethod  from "./TicketPaymentMethod";
-import Ticket from "./Ticket";
 interface TicketPayment {
     id?: number;
-    ticket_id?: number | Ticket;
-    payment_method_id?: number | TicketPaymentMethod;
+    ticket_id?: number;
+    payment_method_id?: number;
     date?: Date;
 }
 export = TicketPayment;

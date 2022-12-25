@@ -1,8 +1,7 @@
-import AirplaneManufacturer from "./AirplaneManufacturer";
 interface AirplaneType {
-    id: number;
+    id?: number;
     name: string;
-    manufacturer: number | AirplaneManufacturer;
+    manufacturer: number;
     range_km: number;
     seats: number;
 

@@ -1,9 +1,7 @@
-import Airport from "./Airport";
-import AirportGateType from "./AirportGateType";
 interface AirportGate {
     id?: number;
-    airport_id?: number | Airport;
+    airport_id?: number;
     number?: string;
-    type?: number | AirportGateType;
+    type?: number;
 }
 export = AirportGate;

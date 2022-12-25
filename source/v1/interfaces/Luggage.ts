@@ -1,9 +1,7 @@
-import Flight from './Flight';
-import Passenger from './Passenger';
 interface Luggage {
-    id: number;
-    passenger_id: number | Passenger;
-    flight_id: number | Flight;
+    id?: number;
+    passenger_id: number;
+    flight_id: number;
     type_id: number;
     special_mentions: string;
 }

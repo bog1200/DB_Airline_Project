@@ -1,6 +1,5 @@
-import Flight from './Flight';
 interface FlightCrew {
-    id: number;
-    flight_id: number | Flight;
+    id?: number;
+    flight_id: number;
 }
 export = FlightCrew;

@@ -1,8 +1,6 @@
-import Country from "./Country";
-
 interface City {
-    id: number;
+    id?: number;
     name: string;
-    country: number | Country;
+    country: number;
 }
 export = City;

@@ -1,5 +1,5 @@
 interface Job {
-    id: number;
+    id?: number;
     position: string;
     salary: number;
 }
