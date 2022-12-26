@@ -7,12 +7,12 @@ const router = express.Router();
  *  schemas:
  *    Error:
  *      type: object
+ *      required:
+ *      - message
  *      properties:
  *          message:
  *              type: string
  *              description: The error message
- *              required: true
- *              nullable: false
  *
  *
  */

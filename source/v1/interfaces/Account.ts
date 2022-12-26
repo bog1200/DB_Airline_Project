@@ -4,41 +4,46 @@
  *   schemas:
  *     Account:
  *       type: object
+ *       required:
+ *       - email
+ *       - uuid
+ *       - password
+ *       - first_name
+ *       - last_name
  *       properties:
  *         email:
  *           type: string
  *           format: email
  *           description: The email address associated with the account.
  *           example: 'mail@mail.com'
- *           nullable: true
  *           default: ''
  *         uuid:
  *           type: string
  *           format: uuid
  *           description: The unique id associated with the account.
- *           example: 'cbc5c120-860f-4088-a1c2-55931abcf288 '
- *           nullable: true
+ *           example: '00000000-0000-0000-0000-000000000000'
  *           default: ''
  *         password:
  *           type: string
  *           format: password
  *           description: The password for the account.
  *           example: 'password'
- *           nullable: true
  *           default: ''
+ *           writeOnly: true
+ *           minLength: 8
+ *           maxLength: 64
+ *           pattern: '^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})'
  *         first_name:
  *           type: string
  *           description: The first name of the account holder.
  *           required: true
  *           default: ''
  *           example: 'John'
- *           nullable: true
  *         last_name:
  *           type: string
  *           description: The last name of the account holder.
  *           default: ''
  *           example: 'Doe'
- *           nullable: true
  *
  *
  */
