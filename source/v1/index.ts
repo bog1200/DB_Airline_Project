@@ -9,6 +9,7 @@ import airports from './routes/airport';
 import account_cards from './routes/account_card';
 import airport_gates from './routes/airport_gate';
 import airport_gate_types from './routes/airport_gate_type';
+import cities from './routes/city';
 
 
 router.use('/accounts', accounts);
@@ -17,5 +18,6 @@ router.use('/airports', airports);
 router.use('/account/cards', account_cards);
 router.use('/airport/gates', airport_gates);
 router.use('/airport/gates/types', airport_gate_types);
+router.use('/city', cities);
 
 export = router;
