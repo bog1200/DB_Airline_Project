@@ -1,6 +1,6 @@
 {
   "name": "airline_project_api",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -12,7 +12,7 @@
     "url": "git+https://github.com/bog1200/DB_Airline_Project.git"
   },
   "author": "bog1200",
-  "license": "ISC",
+  "license": "GPL-3.0-or-later",
   "bugs": {
     "url": "https://github.com/bog1200/DB_Airline_Project/issues"
   },
