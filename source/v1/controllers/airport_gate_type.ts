@@ -48,15 +48,13 @@ const addAirportGateType = (req: Request, res: Response, next: NextFunction) => 
                         message: 'Airport gate type added',
                         airport_gate_type: result[0] as AirportGateType //cast
                     });
-                }
-                ).catch((err: any) => {
+                }).catch((err: any) => {
                     return res.status(500).json({
                     message: 'Server error',
                     error: err
                 });
             });
-        }
-        ).catch((err: any) => {
+        }).catch((err: any) => {
             return res.status(500).json({
             message: 'Server error',
             error: err
@@ -79,15 +77,13 @@ const deleteAirportGateType = (req: Request, res: Response, next: NextFunction) 
                     return res.status(200).json({
                         message: 'Airport gate type deleted'
                     });
-                }
-                ).catch((err: any) => {
+                }).catch((err: any) => {
                     return res.status(500).json({
                     message: 'Server error',
                     error: err
                 });
             });
-        }
-        ).catch((err: any) => {
+        }).catch((err: any) => {
             return res.status(500).json({
             message: 'Server error',
             error: err
@@ -103,9 +99,6 @@ const searchAirportGateTypes = (req: Request, res: Response, next: NextFunction)
             message: 'Bad request'
         });
     }
-
-
-
     query('SELECT * FROM AIRPORT_GATE_TYPE WHERE type = ?', [type])
         .then((result: any) => {
             if (result.length > 0) {
