@@ -59,7 +59,7 @@ const addAccount = (req: Request, res: Response, next: NextFunction) => {
             message: 'Email, password, first name, and last name are required'
         });
     }
-    query(`SELECT ID FROM ACCOUNT WHERE email = ?`, [req.body.email])
+    query(`SELECT uuid FROM ACCOUNT WHERE email = ?`, [req.body.email])
         .then((result: any) => {
             if (result.length > 0) {
                 return res.status(409).json({
@@ -133,14 +133,14 @@ const addAccount = (req: Request, res: Response, next: NextFunction) => {
  */
 const getAccount = (req: Request, res: Response, next: NextFunction) => {
     const uuid = req.query.uuid;
-    query('SELECT uuid, first_name, last_name FROM ACCOUNT WHERE uuid = ?', [uuid])
+    query('SELECT uuid, email, first_name, last_name FROM ACCOUNT WHERE uuid = ?', [uuid])
         .then((result: any) => {
             if (result.length == 0) {
                 return res.status(404).json({
                     message: 'No valid entry found for provided uuid'
                 });
             }
-            res.status(200).json(result[0]);
+            res.status(200).json(result[0] as Account);
         })
         .catch((err: any) => {
             console.log(err);
