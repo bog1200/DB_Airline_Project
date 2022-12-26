@@ -5,7 +5,12 @@ import Country from "../interfaces/Country";
 const getCountries = (req: Request, res: Response, next: NextFunction) => {
     query('SELECT * FROM COUNTRY')
         .then((result: any) => res.status(200).json(result as Country[]))
-        .catch((err: any) => next(err));
+        .catch((err: any) => {
+        return res.status(500).json({
+            message: 'Server error',
+            error: err
+        });
+    });```
 }
 
 const getCountry = (req: Request, res: Response, next: NextFunction) => {
@@ -62,7 +67,12 @@ const addCountry = (req: Request, res: Response, next: NextFunction) => {
     }
     query('INSERT INTO COUNTRY(icao, name) VALUES (?, ?)', [icao, name])
         .then((result: any) => res.status(201).json({message: 'Country created'}))
-        .catch((err: any) => next(err));
+        .catch((err: any) => {
+        return res.status(500).json({
+            message: 'Server error',
+            error: err
+        });
+    });
 }
 
 const deleteCountry = (req: Request, res: Response, next: NextFunction) => {
@@ -74,7 +84,12 @@ const deleteCountry = (req: Request, res: Response, next: NextFunction) => {
     }
     query('DELETE FROM COUNTRY WHERE id = ?', [id])
         .then((result: any) => res.status(200).json({message: 'Country deleted'}))
-        .catch((err: any) => next(err));
+        .catch((err: any) => {
+        return res.status(500).json({
+            message: 'Server error',
+            error: err
+        });
+    });
 }
 
 export default {getCountries, getCountry, searchCountry, addCountry, deleteCountry};
