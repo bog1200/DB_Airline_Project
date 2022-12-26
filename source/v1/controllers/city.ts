@@ -59,8 +59,7 @@ query('SELECT id FROM CITY WHERE name = ? AND country = ?', [city.name, city.cou
                                     country: city.country
                                 }
                             });
-                        }
-                    ).catch((err: any) => {
+                    }).catch((err: any) => {
                     return res.status(500).json({
                         message: 'Server error',
                         error: err
