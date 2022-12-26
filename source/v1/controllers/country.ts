@@ -10,7 +10,7 @@ const getCountries = (req: Request, res: Response, next: NextFunction) => {
             message: 'Server error',
             error: err
         });
-    });```
+    });
 }
 
 const getCountry = (req: Request, res: Response, next: NextFunction) => {
