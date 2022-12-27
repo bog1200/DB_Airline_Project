@@ -108,6 +108,12 @@ const addJob = (req: Request, res: Response) => {
             message: 'Job position and salary are required'
         });
     }
+    if(salary < 0 || salary > 10000){
+     return res.status(400).json({
+        message: 'Bad request',
+        error: 'Invalid salary'
+        });
+     }
     query('INSERT INTO JOB (position, salary) VALUES (?, ?)', [position, salary])
         .then((result: any) => {
             res.status(201).json({
