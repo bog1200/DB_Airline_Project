@@ -39,7 +39,7 @@ const searchJob = (req: Request, res: Response) => {
             message: 'Bad request'
         });
     }
-    query('SELECT * FROM JOB WHERE position LIKE ? OR salary LIKE ?', [`%${position}%`, `%${salary}%`])
+    query('SELECT * FROM JOB WHERE position = ? OR salary =?', [position, salary])
         .then((result: any) => {
             if (result.length == 0) {
                 res.status(404).json({
