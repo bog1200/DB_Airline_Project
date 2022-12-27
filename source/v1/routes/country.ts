@@ -6,6 +6,7 @@ router.get('/all', controller.getCountries);
 router.get('/', controller.getCountry);
 router.get('/search/', controller.searchCountry);
 router.post('/', controller.addCountry);
+router.put('/', controller.updateCountry);
 router.delete('/', controller.deleteCountry);
 
 export = router;

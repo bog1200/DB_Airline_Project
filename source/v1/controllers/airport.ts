@@ -1,6 +1,7 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response } from 'express';
 import { query } from '../../database'; //connect to the database
-import Airport from "../interfaces/Airport";  //import the interface
+import Airport from "../interfaces/Airport";
+import AirportGate from "../interfaces/AirportGate";  //import the interface
 
 /**
  * @openapi
@@ -37,7 +38,7 @@ import Airport from "../interfaces/Airport";  //import the interface
  *                             schema:
  *                                 $ref: '#/components/schemas/Error'
  */
-const getAirport = (req: Request, res: Response, next: NextFunction) => {
+const getAirport = (req: Request, res: Response) => {
     const id = req.query.id;
     query('SELECT * FROM AIRPORT WHERE id = ?', [id])
         .then((result: any) => {
@@ -100,7 +101,7 @@ const getAirport = (req: Request, res: Response, next: NextFunction) => {
  *                   message:
  *                     type: string
  *                     example: Airports found
- *                   flights:
+ *                   data:
  *                     type: array
  *                     items:
  *                       $ref: '#/components/schemas/Airport'
@@ -125,7 +126,7 @@ const getAirport = (req: Request, res: Response, next: NextFunction) => {
  *                     type: string
  *                     example: Airport not found
  */
-const searchAirports = (req: Request, res: Response, next: NextFunction) => {
+const searchAirports = (req: Request, res: Response) => {
     const city_id = req.query.city_id;
     const iata = req.query.iata;
     const icao = req.query.icao;
@@ -135,9 +136,10 @@ const searchAirports = (req: Request, res: Response, next: NextFunction) => {
             message: 'Bad request'
         });
     }
-
-    let sql = 'SELECT * FROM AIRPORT WHERE ';
+    //@ts-ignore
+    let sql = 'SELECT * FROM AIRPORT';
     let params: any[] = [];
+    sql += ' WHERE ';
 
     if (city_id) {
         sql += 'city_id = ?';
@@ -201,7 +203,7 @@ const searchAirports = (req: Request, res: Response, next: NextFunction) => {
  *                   message:
  *                     type: string
  *                     example: Airport added
- *                   airport:
+ *                   data:
  *                     $ref: '#/components/schemas/Airport'
  *         400:
  *           description: Bad request
@@ -214,7 +216,7 @@ const searchAirports = (req: Request, res: Response, next: NextFunction) => {
  *                     type: string
  *                     example: Bad request
  */
-const addAirport = (req: Request, res: Response, next: NextFunction) => {
+const addAirport = (req: Request, res: Response) => {
     const airport = req.body as Airport;
     if (!airport.name || !airport.city_id || !airport.iata || !airport.icao || !airport.address || airport.icao.length != 4 || airport.iata.length != 3) {
         return res.status(400).json({
@@ -225,17 +227,20 @@ const addAirport = (req: Request, res: Response, next: NextFunction) => {
     query("SELECT id FROM CITY WHERE id = ?", [airport.city_id]).then((result: any) => {
         if (result.length == 0) {
             return res.status(400).json({
-                message: 'Bad request'
+                message: 'Bad request',
+                error: 'City not found'
             });
         }
-        query('SELECT * FROM AIRPORT WHERE iata = ? OR icao = ?', [airport.iata, airport.icao])
+        query('SELECT * FROM AIRPORT WHERE name = ? OR iata = ? OR icao = ? OR address = ?', [airport.name, airport.city_id, airport.iata, airport.icao, airport.address])
             .then((result: any) => {
                     if (result.length > 0) {
                         return res.status(400).json({
-                            message: 'Bad request'
+                            message: 'Bad request',
+                            error: 'Airport already exists'
                         });
                     } else {
-                        query('INSERT INTO AIRPORT SET ?', [airport])
+                        //noinspection SqlResolve
+                        query("INSERT INTO AIRPORT SET ?", [airport])
                             .then((result: any) => {
                                 res.status(201).json({
                                     message: 'Airport added',
@@ -250,6 +255,79 @@ const addAirport = (req: Request, res: Response, next: NextFunction) => {
 
 }
 
+/**
+ * @openapi
+ * paths:
+ *   /airports:
+ *     put:
+ *       summary: Update an airport name
+ *       tags:
+ *         - airports
+ *       parameters:
+ *         - in: query
+ *           name: id
+ *           required: true
+ *           schema:
+ *             type: number
+ *             description: The id of the airport
+ *       requestBody:
+ *         required: true
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Airport'
+ *       responses:
+ *         201:
+ *           description: Airport updated
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 type: object
+ *                 properties:
+ *                   message:
+ *                     type: string
+ *                     example: Airport updated
+ *                   data:
+ *                     $ref: '#/components/schemas/Airport'
+ *         400:
+ *           description: Bad request
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 type: object
+ *                 properties:
+ *                   message:
+ *                     type: string
+ *                     example: Bad request
+ */
+const updateAirport = async (req: Request, res: Response) => {
+    const id = req.query.id;
+    const airport = req.body as Airport;
+
+    if (!airport.name || !id) {
+        return res.status(400).json({
+            message: 'Bad request'
+        });
+    }
+    let result: any = await query('SELECT * FROM AIRPORT WHERE name = ?', [airport.name]);
+    if (result.length > 0) {
+        return res.status(400).json({
+            message: 'Bad request',
+            error: 'Airport already exists'
+        });
+    }
+    result = await query("UPDATE AIRPORT SET name = ? WHERE id = ?", [airport.name, id]);
+    if (result.affectedRows > 0) {
+        return res.status(201).json({
+            message: 'Airport updated',
+            data: {
+                id: id,
+                name: airport.name
+            }
+        });
+
+    }
+}
 
 /**
  * @openapi
@@ -287,7 +365,7 @@ const addAirport = (req: Request, res: Response, next: NextFunction) => {
  *                                 $ref: '#/components/schemas/Error'
  */
 
-const deleteAirport = (req: Request, res: Response, next: NextFunction) => {
+const deleteAirport = (req: Request, res: Response) => {
     const id = req.query.id;
     query('DELETE FROM AIRPORT WHERE id = ?', [id])
         .then((result: any) => {
@@ -313,4 +391,4 @@ const deleteAirport = (req: Request, res: Response, next: NextFunction) => {
 
 
 
-export default {getAirport, searchAirports, addAirport, deleteAirport};
+export default {getAirport, searchAirports, addAirport, updateAirport, deleteAirport};

@@ -5,6 +5,7 @@ const router = express.Router();
 router.get("/search", controller.searchAirports);
 router.get("/", controller.getAirport);
 router.post("/", controller.addAirport);
+router.put("/", controller.updateAirport);
 router.delete("/", controller.deleteAirport);
 
 export = router;

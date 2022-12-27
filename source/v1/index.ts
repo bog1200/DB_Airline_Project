@@ -18,9 +18,9 @@ router.use('/flights', flights);
 router.use('/airports', airports);
 router.use('/account/cards', account_cards);
 router.use('/airport/gates', airport_gates);
-router.use('/airport/gates/types', airport_gate_types);
-router.use('/country', country);
-router.use('/city', cities);
+router.use('/airport/gate/types', airport_gate_types);
+router.use('/countries', country);
+router.use('/cities', cities);
 
 
 export = router;

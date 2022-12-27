@@ -42,8 +42,7 @@ const options = {
     apis: ['./source/v1/**/*.ts'],
 };
 const specs = swaggerJSDoc(options);
-console.log(specs);
-// @ts-ignore
+// console.log(specs);
 router.get('/swagger.json', (req, res) => {
     res.setHeader('Content-Type', 'application/json');
     res.send(specs);

@@ -1,6 +1,6 @@
 
 
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response} from 'express';
 import { query } from '../../database'; //connect to the database
 import Account from '../interfaces/Account'; //import the interface
 import bcrypt from 'bcrypt'; //password encryption
@@ -52,18 +52,18 @@ import {v4 as uuidv4} from 'uuid'; //unique account id
  *                 $ref: '#/components/schemas/Error'
  */
 
-
-const addAccount = (req: Request, res: Response, next: NextFunction) => {
+const addAccount = (req: Request, res: Response) => {
     if (!req.body.email || !req.body.password || !req.body.first_name || !req.body.last_name) {
         return res.status(400).json({
-            message: 'Email, password, first name, and last name are required'
+            message: 'Bad request'
         });
     }
     query(`SELECT uuid FROM ACCOUNT WHERE email = ?`, [req.body.email])
         .then((result: any) => {
             if (result.length > 0) {
                 return res.status(409).json({
-                    message: 'Email already exists'
+                    message: 'Bad request',
+                    error: 'Email already exists'
                 });
             }
             const hash = bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10));
@@ -77,7 +77,7 @@ const addAccount = (req: Request, res: Response, next: NextFunction) => {
             };
 
             query(`INSERT INTO ACCOUNT (email, uuid, password, first_name, last_name) VALUES (?, ?, ?, ?, ?)`, [account.email, account.uuid, account.password, account.first_name, account.last_name])
-                .then((result: any) => {
+                .then(() => {
                     return res.status(201).json({message: 'Account created'});
                 })
                 .catch((err: any) => {
@@ -98,6 +98,121 @@ const addAccount = (req: Request, res: Response, next: NextFunction) => {
 /**
  * @openapi
  * paths:
+ *   /accounts:
+ *     put:
+ *       summary: Update an account
+ *       tags:
+ *         - accounts
+ *       parameters:
+ *         - in: query
+ *           name: uuid
+ *           required: true
+ *           schema:
+ *             type: string
+ *             format: uuid
+ *             description: The uuid of the account
+ *       requestBody:
+ *         required: true
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Account'
+ *             example:
+ *               email: "johndoe@example.com"
+ *               password: "1234"
+ *               first_name: "John"
+ *               last_name: "Doe"
+ *       responses:
+ *         '201':
+ *           description: Account modified
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 $ref: '#/components/schemas/Account'
+ *         '500':
+ *           description: Server error
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 $ref: '#/components/schemas/Error'
+ *         '400':
+ *           description: Bad request
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 $ref: '#/components/schemas/Error'
+ *         '409':
+ *           description: Email already exists
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 $ref: '#/components/schemas/Error'
+ */
+
+const updateAccount = (req: Request, res: Response) => {
+    const uuid = req.query.uuid;
+    if (!uuid && !req.body.email && !req.body.password && !req.body.first_name && !req.body.last_name) {
+        return res.status(400).json({
+            message: 'Bad request'
+        });
+    }
+    let sql = `UPDATE ACCOUNT SET `;
+    let params = [];
+
+    if(req.body.email){
+        query(`SELECT uuid FROM ACCOUNT WHERE email = ?`, [req.body.email])
+            .then((result: any) => {
+                if (result.length > 0) {
+                    return res.status(409).json({
+                        message: 'Bad request',
+                        error: 'Email already exists'
+                    });
+                }
+                sql += `email = ?, `;
+                params.push(req.body.email);
+            })
+            .catch((err: any) => {
+                console.log(err);
+                return res.status(500).json({
+                    error: err
+                });
+            });
+    }
+    if(req.body.password) {
+        const hash = bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10));
+        sql += `password = ?, `;
+        params.push(hash);
+    }
+    if(req.body.first_name) {
+        sql += `first_name = ?, `;
+        params.push(req.body.first_name);
+    }
+    if(req.body.last_name) {
+        sql += `last_name = ?, `;
+        params.push(req.body.last_name);
+    }
+    sql = sql.slice(0, -2);
+    sql += ` WHERE uuid = ?`;
+    params.push(uuid);
+    query(sql, params).then((
+        result: any) => {
+        if (result.affectedRows > 0) {
+            return res.status(201).json({message: 'Account modified'});
+        }
+        return res.status(400).json({message: 'Bad request'});
+    })
+        .catch((err: any) => {
+            console.log(err);
+            return res.status(500).json({
+                error: err
+            });
+        }
+    );
+}
+
+/**
+ * @openapi
+ * paths:
  *     /accounts:
  *         get:
  *             summary: Get an account by uuid
@@ -106,10 +221,10 @@ const addAccount = (req: Request, res: Response, next: NextFunction) => {
  *             parameters:
  *                 - in: query
  *                   name: uuid
+ *                   required: true
  *                   schema:
  *                     type: string
  *                     format: uuid
- *                     required: true
  *                     description: The uuid of the account
  *             responses:
  *                 '200':
@@ -131,7 +246,7 @@ const addAccount = (req: Request, res: Response, next: NextFunction) => {
  *                             schema:
  *                                 $ref: '#/components/schemas/Error'
  */
-const getAccount = (req: Request, res: Response, next: NextFunction) => {
+const getAccount = (req: Request, res: Response) => {
     const uuid = req.query.uuid;
     query('SELECT uuid, email, first_name, last_name FROM ACCOUNT WHERE uuid = ?', [uuid])
         .then((result: any) => {
@@ -194,12 +309,12 @@ const getAccount = (req: Request, res: Response, next: NextFunction) => {
  *                 $ref: '#/components/schemas/Error'
  */
 
-const loginAccount = (req: Request, res: Response, next: NextFunction) => {
+const loginAccount = (req: Request, res: Response) => {
     const email = req.body.email;
     const password = req.body.password;
     if (!email || !password) {
         return res.status(400).json({
-            message: 'Email and password are required'
+            message: 'Bad request'
         });
     }
     query('SELECT * FROM ACCOUNT WHERE email = ?', [email])
@@ -239,7 +354,7 @@ const loginAccount = (req: Request, res: Response, next: NextFunction) => {
  * paths:
  *     /accounts:
  *         delete:
- *             summary: Delete an account by uuid
+ *             summary: Delete an account
  *             tags:
  *                 - accounts
  *             parameters:
@@ -270,7 +385,7 @@ const loginAccount = (req: Request, res: Response, next: NextFunction) => {
  *                             schema:
  *                                 $ref: '#/components/schemas/Error'
  */
-const deleteAccount = (req: Request, res: Response, next: NextFunction) => {
+const deleteAccount = (req: Request, res: Response) => {
     const uuid = req.query.uuid;
     query('DELETE FROM ACCOUNT WHERE uuid = ?', [uuid])
         .then((result: any) => {
@@ -292,4 +407,4 @@ const deleteAccount = (req: Request, res: Response, next: NextFunction) => {
 }
 
 
-export default { addAccount, getAccount, loginAccount, deleteAccount };
+export default { addAccount, getAccount, updateAccount, loginAccount, deleteAccount };

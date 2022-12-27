@@ -8,6 +8,7 @@ const router = express.Router();
 //router.delete('/accounts/:id', controller.deleteAccount);
 router.get('/', controller.getAccount);
 router.post("/", controller.addAccount);
+router.put("/", controller.updateAccount);
 router.post("/login/", controller.loginAccount);
 router.delete("/", controller.deleteAccount);
 
