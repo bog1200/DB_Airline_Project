@@ -1,10 +1,51 @@
-import { Request, Response, NextFunction } from 'express';
-import { query } from '../../database'; //connect to the database
+import {Request, Response} from 'express';
+import {query} from '../../database'; //connect to the database
 import AccountCard from '../interfaces/AccountCard'; //import the interface\
 
 
-
-const getAccountCard =  (req: Request, res: Response, next: NextFunction) => {
+/**
+ * @openapi
+ * paths:
+ *     /account/cards:
+ *         get:
+ *             summary: Get a list of all account cards
+ *             tags:
+ *                 - cards
+ *             parameters:
+ *                 - in: query
+ *                   name: uuid
+ *                   schema:
+ *                     type: string
+ *                     format: uuid
+ *                     required: true
+ *                     description: The uuid of the account
+ *             responses:
+ *                 '200':
+ *                     description: A card object
+ *                     content:
+ *                         application/json:
+ *                             schema:
+ *                                 $ref: '#/components/schemas/AccountCard'
+ *                 '400':
+ *                     description: Invalid request
+ *                     content:
+ *                         application/json:
+ *                             schema:
+ *                                 $ref: '#/components/schemas/Error'
+ *                 '404':
+ *                     description: No cards found
+ *                     content:
+ *                         application/json:
+ *                             schema:
+ *                                 $ref: '#/components/schemas/Error'
+ *                 '500':
+ *                     description: Server error
+ *                     content:
+ *                         application/json:
+ *                             schema:
+ *                                 $ref: '#/components/schemas/Error'
+ */
+const getAccountCard =  (req: Request, res: Response) => {
     const account_id = req.query.uuid;
     if(!account_id){
         return res.status(400).json({
@@ -30,7 +71,67 @@ const getAccountCard =  (req: Request, res: Response, next: NextFunction) => {
                 });
         });
 }
-const addAccountCard = (req: Request, res: Response, next: NextFunction) => {
+
+/**
+ * @openapi
+ * paths:
+ *   /account/cards:
+ *     post:
+ *       summary: Add a new account card
+ *       tags:
+ *       - cards
+ *       requestBody:
+ *         required: true
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/AccountCard'
+ *       responses:
+ *         200:
+ *           description: Card added
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 type: object
+ *                 properties:
+ *                   message:
+ *                     type: string
+ *                     example: Card added
+ *         400:
+ *           description: Bad request
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 type: object
+ *                 properties:
+ *                   message:
+ *                     type: string
+ *                     example: All fields are required
+ *         404:
+ *           description: Account not found
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 type: object
+ *                 properties:
+ *                   message:
+ *                     type: string
+ *                     example: Account not found
+ *         500:
+ *           description: Server error
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 type: object
+ *                 properties:
+ *                   message:
+ *                     type: string
+ *                     example: Server error
+ *                   error:
+ *                     type: object
+ */
+
+const addAccountCard = (req: Request, res: Response) => {
     const account_id = req.body.account_id;
     const cardholder_first_name = req.body.cardholder_first_name;
     const cardholder_last_name = req.body.cardholder_last_name;
@@ -40,7 +141,7 @@ const addAccountCard = (req: Request, res: Response, next: NextFunction) => {
     const cvv = req.body.cvv;
     if (!account_id || !cardholder_first_name || !cardholder_last_name || !card_number || !exp_month || !exp_year || !cvv) {
         return res.status(400).json({
-            message: 'All fields are required'
+            message: 'Bad request'
         });
     }
     //check if the user with the specified uuid already exists
@@ -48,17 +149,20 @@ const addAccountCard = (req: Request, res: Response, next: NextFunction) => {
         .then((results: any) => {
             if (results.length == 0) {
                 return res.status(404).json({
-                    message: 'Account not found'
+                    message: 'Bad request',
+                    error: 'Account not found'
                 });
             }
             if (!isLuhnValid(card_number)) {
                 return res.status(400).json({
-                    message: 'Invalid card number'
+                    message: 'Bad request',
+                    error: 'Invalid card number'
                 });
             }
             if (exp_month > 12 || exp_month < 1) {
                 return res.status(400).json({
-                    message: 'Invalid month'
+                    message: 'Bad request',
+                    error: 'Invalid month'
                 });
             }
             //compare the expiration date to the current date
@@ -66,38 +170,119 @@ const addAccountCard = (req: Request, res: Response, next: NextFunction) => {
             const currentYear = new Date().getFullYear();
             if (exp_year < currentYear || (exp_year == currentYear && exp_month < currentMonth)) {
                 return res.status(400).json({
-                    message: 'Card has expired'
+                    message: 'Bad request',
+                    error: 'Card has expired'
                 });
             }
             if (cvv.length != 3) {
                 return res.status(400).json({
-                    message: 'Invalid CVV'
+                    message: 'Bad request',
+                    error: 'Invalid CVV'
                 });
             }
-            query('INSERT INTO ACCOUNT_CARD (account_id, cardholder_first_name, cardholder_last_name, card_number, exp_month, exp_year, cvv) VALUES (?, ?, ?, ?, ?, ?, ?)', [account_id, cardholder_first_name, cardholder_last_name, card_number, exp_month, exp_year, cvv])
+            //check if the card already exists
+            query('SELECT id FROM ACCOUNT_CARD WHERE card_number = ? AND account_id = ?', [card_number, account_id])
                 .then((results: any) => {
-                    return res.status(200).json({
-                        message: 'Card added'
-                    });
-                })
-                .catch((err: any) => {
-                    console.log(err);
-                    res.status(500).json({
-                        message: 'Server error',
-                        error: err
-                    });
-                });
+                    if (results.length > 0) {
+                        return res.status(400).json({
+                            message: 'Bad request',
+                            error: 'Card already exists'
+                        });
+                    }
+                    //add the card to the database
+                    query('INSERT INTO ACCOUNT_CARD (account_id, cardholder_first_name, cardholder_last_name, card_number, exp_month, exp_year, cvv) VALUES (?, ?, ?, ?, ?, ?, ?)', [account_id, cardholder_first_name, cardholder_last_name, card_number, exp_month, exp_year, cvv])
+                        .then((results: any) => {
+                            return res.status(200).json({
+                                message: 'Card added'
+                            });
+                        })
+                        .catch((err: any) => {
+                            console.log(err);
+                            res.status(500).json({
+                                message: 'Server error',
+                                error: err
+                            });
+                        });
+                }
+                )
         }
         )
 }
 
+/**
+ * @openapi
+ * paths:
+ *   /account/cards:
+ *     delete:
+ *       summary: Delete an account card
+ *       tags:
+ *         - cards
+ *       parameters:
+ *       - in: query
+ *         name: account_id
+ *         description: Account ID
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *       - in: query
+ *         name: card_id
+ *         description: Card ID
+ *         required: true
+ *         schema:
+ *           type: integer
+ *
+ *       responses:
+ *         200:
+ *           description: Account card deleted
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 type: object
+ *                 properties:
+ *                   message:
+ *                     type: string
+ *                     example: Account card deleted
+ *         400:
+ *           description: Bad request
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 type: object
+ *                 properties:
+ *                   message:
+ *                     type: string
+ *                     example: All fields are required
+ *         404:
+ *           description: No account card found
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 type: object
+ *                 properties:
+ *                   message:
+ *                     type: string
+ *                     example: No account card found
+ *         500:
+ *           description: Server error
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 type: object
+ *                 properties:
+ *                   message:
+ *                     type: string
+ *                     example: Server error
+ *                   error:
+ *                     type: object
+ */
 
-const deleteAccountCard = (req: Request, res: Response, next: NextFunction) => {
-    const account_id = req.body.account_id;
-    const card_id = req.body.card_id;
+const deleteAccountCard = (req: Request, res: Response) => {
+    const account_id = req.query.account_id;
+    const card_id = req.query.card_id;
     if (!account_id || !card_id) {
         return res.status(400).json({
-            message: 'All fields are required'
+            message: 'Bad request'
         });
     }
     query('DELETE FROM ACCOUNT_CARD WHERE account_id = ? AND id = ?', [account_id, card_id])
@@ -135,7 +320,7 @@ function checkLuhn(strToTest: string): number
     {
         digit = parseInt(strToTest[i], 10) | 0;
 
-        if (odd === true)
+        if (odd)
         {
             digit = digit * 2 | 0;
         }
@@ -159,8 +344,6 @@ function isLuhnValid(strToTest: string): boolean
     {
         return false;
     }
-
-    let ret:boolean = (checkLuhn(strToTest) === 0);
-    return ret;
+    return (checkLuhn(strToTest) === 0);
 }
 
