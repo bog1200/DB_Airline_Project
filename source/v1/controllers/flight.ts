@@ -115,7 +115,7 @@ const updateFlight = async (req: Request, res: Response) => {
     const departure_time = req.body.departure_time;
     const arrival_time = req.body.arrival_time;
     const price = req.body.price;
-    if (!origin_id && !plane_id && !destination_id && !origin_gate_id && !destination_gate_id && !departure_time && !arrival_time && !price) {
+    if (!(origin_id && origin_gate_id) && !(destination_id && destination_gate_id) &&!plane_id && !departure_time && !arrival_time && !price) {
         return res.status(400).json({
             message: "Bad request"
         });
@@ -302,7 +302,7 @@ const updateFlight = async (req: Request, res: Response) => {
  *           schema:
  *             type: string
  *             format: date-time
- *         - name: price
+ *         - name: price_min
  *           in: query
  *           description: Minimum price for the flight
  *           schema:
@@ -324,7 +324,7 @@ const updateFlight = async (req: Request, res: Response) => {
  *                 properties:
  *                   message:
  *                     type: string
- *                     example: Flight updated
+ *                     example: Flight found
  *                   data:
  *                     type: array
  *                     items:
