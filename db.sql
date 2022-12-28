@@ -214,7 +214,7 @@ CREATE TABLE `LUGGAGE` (
                            `SPECIAL_MENTIONS` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-INSERT INTO `LUGGAGE` (id, passenger_id, flight_id, type_id, special_mentions)VALUES
+INSERT INTO `LUGGAGE` (id, passenger_id, flight_id, weight, special_mentions)VALUES
                                                                                              (1, 37, 2, 1, ''),
                                                                                              (2, 37, 2, 2, ''),
                                                                                              (3, 43, 5, 2, ''),

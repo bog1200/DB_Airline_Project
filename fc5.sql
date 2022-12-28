@@ -103,7 +103,7 @@ INSERT INTO `JOB` (id, position, salary) VALUES
                                                    (5, 'Avionics technician', 6000),
                                                    (9, 'Pilot', 7000);
 
-INSERT INTO `LUGGAGE` (id, passenger_id, flight_id, type_id, special_mentions) VALUES
+INSERT INTO `LUGGAGE` (id, passenger_id, flight_id, weight, special_mentions) VALUES
                                                                                              (1, 37, 2, 1, ''),
                                                                                              (2, 37, 2, 2, ''),
                                                                                              (3, 43, 5, 2, ''),
