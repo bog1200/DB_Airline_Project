@@ -43,7 +43,7 @@
 interface Ticket {
     id?: number;
     code: string;
-    account_id: number;
+    account_id: string;
     passenger_id: number;
     flight_id: number ;
 }

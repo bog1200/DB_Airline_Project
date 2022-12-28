@@ -13,6 +13,7 @@ import airport_gate_types from './routes/airport_gate_type';
 import jobs from "./routes/job";
 import cities from './routes/city';
 import luggage from "./routes/luggage";
+import tickets from './routes/ticket';
 
 
 router.use('/accounts', accounts);
@@ -24,6 +25,7 @@ router.use('/jobs', jobs);
 router.use('/countries', country);
 router.use('/cities', cities);
 router.use('/luggages', luggage);
+router.use('/tickets', tickets);
 
 
 export = router;
