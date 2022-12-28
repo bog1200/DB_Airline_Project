@@ -55,13 +55,13 @@
  */
 interface Flight {
     id?: number;
-    plane_id?: number ;
-    origin_id?: number;
-    destination_id?: number;
-    origin_gate_id?: number;
-    destination_gate_id?: number;
-    departure_time?: Date;
-    arrival_time?: Date;
-    price?: number;
+    plane_id: number ;
+    origin_id: number;
+    destination_id: number;
+    origin_gate_id: number;
+    destination_gate_id: number;
+    departure_time: Date;
+    arrival_time: Date;
+    price: number;
 }
 export = Flight;
