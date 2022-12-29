@@ -81,8 +81,9 @@ const getTicketPaymentMethod = (req: Request, res: Response) => {
     query('SELECT * FROM TICKET_PAYMENT_METHOD WHERE id = ?', [id])
         .then((result: any) => {
             if (result.length == 0) {
-                res.status(404).json({
-                    message: 'Ticket Payment Method not found'
+                res.status(400).json({
+                    message: "Bad request",
+                    error: "Ticket Payment Method not found"
                 });
             } else {
                 res.status(200).json(result as TicketPaymentMethod[]);
@@ -255,12 +256,14 @@ const updateTicketPaymentMethod = async (req: Request, res: Response) => {
             message: 'Bad request'
         });
     }
-    //check if ticket payment method exists
+   //check if ticket payment method exists
     const ticketPaymentMethod : any = await query('SELECT * FROM TICKET_PAYMENT_METHOD WHERE id = ?', [id]);
     if (ticketPaymentMethod.length == 0) {
-        return res.status(404).json({
-            message: 'Ticket Payment Method not found'
-        });
+      return res.status(400).json({
+        message: "Bad request",
+        error: "Ticket Payment Method not found"
+  });
+
     }
     //check if the method is duplicated
     const duplicatedTicketPaymentMethod : any =  await query('SELECT * FROM TICKET_PAYMENT_METHOD WHERE method = ?', [method]);
