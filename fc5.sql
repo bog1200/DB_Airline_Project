@@ -139,7 +139,7 @@ INSERT INTO `TICKET` (id, code, `CLIENT_ID`, flight_id, `CLASS`, `PRICE`) VALUES
                                                                                     (4, 997654, 44, 2, 2, 6789),
                                                                                     (5, 232323, 34, 4, 1, 6786);
 
-INSERT INTO `TICKET_PAYMENT` (`ID`, ticket_id, payment_method, date) VALUES
+INSERT INTO `TICKET_PAYMENT` (`ID`, ticket_id, payment_method_id, date) VALUES
                                                                                (1, 1, 2, '2022-12-05 19:28:13'),
                                                                                (2, 2, 1, '2022-12-05 19:28:24'),
                                                                                (3, 3, 2, '2022-12-05 19:28:28'),
@@ -255,7 +255,7 @@ ALTER TABLE `TICKET`
 ALTER TABLE `TICKET_PAYMENT`
     ADD PRIMARY KEY (`ID`),
     ADD UNIQUE KEY `TICKET_PAYMENT_PK` (`ID`),
-    ADD KEY `TICKET_PAYMENT_METHOD_fk` (payment_method),
+    ADD KEY `TICKET_PAYMENT_METHOD_fk` (payment_method_id),
     ADD KEY `TICKET_PAYMENT_TICKET_ID` (ticket_id);
 
 ALTER TABLE `TICKET_PAYMENT_CARD`
@@ -316,7 +316,7 @@ ALTER TABLE `TICKET`
     ADD CONSTRAINT `TICKET_FLIGHT_FK` FOREIGN KEY (flight_id) REFERENCES `FLIGHT` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE `TICKET_PAYMENT`
-    ADD CONSTRAINT `TICKET_PAYMENT_METHOD_fk` FOREIGN KEY (payment_method) REFERENCES `TICKET_PAYMENT_METHOD` (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    ADD CONSTRAINT `TICKET_PAYMENT_METHOD_fk` FOREIGN KEY (payment_method_id) REFERENCES `TICKET_PAYMENT_METHOD` (id) ON DELETE CASCADE ON UPDATE CASCADE,
     ADD CONSTRAINT `TICKET_PAYMENT_TICKET_ID` FOREIGN KEY (ticket_id) REFERENCES `TICKET` (id) ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE `TICKET_PAYMENT_CARD`

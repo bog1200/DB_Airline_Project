@@ -230,7 +230,7 @@ const addTicketPaymentMethod = async (req: Request, res: Response) => {
  *
  *       responses:
  *         '201':
- *           description: Ticket payment method created
+ *           description: Ticket payment method updated
  *           content:
  *             application/json:
  *               schema:
