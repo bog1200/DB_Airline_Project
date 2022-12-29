@@ -124,7 +124,7 @@ const getTicketPayment = async (req: Request, res: Response) => {
  *                                 $ref: '#/components/schemas/Error'
  */
 const searchTicketPayments = async (req: Request, res: Response) => {
-    //search by method or by ticket id or by date
+    //search by method or by ticket id
     const ticket_id = req.query.ticket_id;
     const payment_method_id = req.query.payment_method_id;
 
