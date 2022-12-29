@@ -279,12 +279,6 @@ const deleteTicketPayment = async (req: Request, res: Response) => {
             message: "Bad request",
         });
     }
-    const ticketPayment : any = await query('SELECT * FROM TICKET_PAYMENT WHERE id = ?', [id]);
-    if(ticketPayment.length == 0) {
-        return res.status(404).json({
-            message: 'Ticket Payment not found'
-        });
-    }
     const result : any = await query('DELETE FROM TICKET_PAYMENT WHERE id = ?', [id]);
     if(result.affectedRows > 0) {
         return res.status(200).json({
@@ -293,7 +287,12 @@ const deleteTicketPayment = async (req: Request, res: Response) => {
                  id: id
             }
         });
+    } else {
+    return res.status(404).json({
+            message: 'Ticket Payment not found'
+            });
     }
+    
     return res.status(500).json({
         message: 'Server error'
     });
