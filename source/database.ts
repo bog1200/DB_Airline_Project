@@ -1,7 +1,8 @@
-import mysql from 'mysql';
+import mysql, {OkPacket, RowDataPacket} from "mysql2";
 import dotenv from 'dotenv';
 import { v4 as uuidv4 } from 'uuid';
 dotenv.config();
+
 
 const pool = mysql.createPool({
     connectionLimit: 10,
@@ -12,8 +13,8 @@ const pool = mysql.createPool({
     port: parseInt(process.env.DB_PORT ?? '3306')
 });
 
-pool.on('error', (err: any) => {
-    console.log(`[SQL] : ${err}`)
+pool.on('connection', (connection) => {
+    console.log('MySQL connected');
 });
 
 
@@ -21,14 +22,13 @@ pool.on('error', (err: any) => {
 function query(query: string, values?: any) {
     const queryId = uuidv4();
     console.log(`[SQL] (${queryId}): ${query} => ${values}`);
-
     return new Promise((resolve, reject) => {
         pool.getConnection((err: any, connection: any) => {
             if (err) {
                 if (connection) connection.release();
                 reject(err);
             } else {
-                connection.query(query, values, (err: any, results: any) => {
+                connection.execute(query, values, (err: any, results: any) => {
                     connection.release();
                     if (err) {
                         reject(err);
@@ -45,10 +45,9 @@ function query(query: string, values?: any) {
 
 
 
-function end() {
-    pool.end();
-}
 
 
-export { query, end };
+
+
+export { query, OkPacket, RowDataPacket };
 
