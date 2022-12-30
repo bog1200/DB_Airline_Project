@@ -3,48 +3,65 @@
  *
  * components:
  *   schemas:
- *     Luggage:
+ *     Passenger:
  *       type: object
  *       required:
  *       - id
- *       - passenger_id
  *       - flight_id
- *       - weight
+ *       - first_name
+ *       - last_name
+ *       - country
+ *       - id_number
  *       properties:
  *         id:
  *           type: integer
- *           description: Unique ID of the luggage
+ *           description: Unique ID of the passenger
  *           readOnly: true
  *           example: 1
  *           default: ""
- *         passenger_id:
- *           type: integer
- *           default: ""
- *           example: "1"
- *           description: ID of the passenger to which the luggage belongs
  *         flight_id:
  *           type: integer
  *           default: ""
  *           example: "1"
- *           description: ID of the flight to which the luggage belongs to
- *         weight:
- *           type: double
- *           default: ""
- *           example: "1.0"
- *           description: Weight of the luggage
- *         special_mentions:
+ *           description: ID of the flight to which the passenger belongs to
+ *         first_name:
  *           type: string
  *           default: ""
- *           example: "Live animals"
- *           description: Special mentions for the luggage
- *
- *
+ *           example: "John"
+ *           description: First name of the passenger
+ *         last_name:
+ *           type: string
+ *           default: ""
+ *           example: "Doe"
+ *           description: Last name of the passenger
+ *         country:
+ *           type: integer
+ *           default: ""
+ *           example: "1"
+ *           description: ID of the country to which the passenger belongs to
+ *         id_number:
+ *           type: string
+ *           default: ""
+ *           example: "123456789"
+ *           description: ID number of the passenger
+ *         phone:
+ *           type: string
+ *           format: phone
+ *           default: ""
+ *           example: "+123456789"
+ *           description: Phone number of the passenger
+ *         email:
+ *           type: string
+ *           format: email
+ *           default: ""
+ *           example: "1"
+ *           description: Email of the passenger
  */
 interface Passenger {
     id?: number;
     flight_id: number;
-    first_name?: string;
-    last_name?: string;
+    first_name: string;
+    last_name: string;
     country: number;
     id_number: string;
     phone?: string;
