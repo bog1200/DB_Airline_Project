@@ -3,7 +3,6 @@ import dotenv from 'dotenv';
 import { v4 as uuidv4 } from 'uuid';
 dotenv.config();
 
-
 const pool = mysql.createPool({
     connectionLimit: 10,
     host: process.env.DB_HOST,
@@ -22,7 +21,7 @@ pool.on('connection', (connection) => {
 function query(query: string, values?: any) {
     const queryId = uuidv4();
     console.log(`[SQL] (${queryId}): ${query} => ${values}`);
-    return new Promise((resolve, reject) => {
+    return new Promise <OkPacket|RowDataPacket[]> ((resolve, reject) => {
         pool.getConnection((err: any, connection: any) => {
             if (err) {
                 if (connection) connection.release();
