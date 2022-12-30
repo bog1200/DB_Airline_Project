@@ -15,6 +15,7 @@ import cities from './routes/city';
 import luggage from "./routes/luggage";
 import tickets from './routes/ticket';
 import ticket_payments from "./routes/ticket_payment";
+import ticket_payment_card from './routes/ticket_payment_card';
 import ticket_payment_methods from './routes/ticket_payment_method';
 import passengers from './routes/passenger';
 import flight_crew from "./routes/flight_crew";
@@ -32,7 +33,8 @@ router.use('/cities', cities);
 router.use('/luggages', luggage);
 router.use('/tickets', tickets);
 router.use('/ticket/payments', ticket_payments);
-router.use('/ticket/payment/methods', ticket_payment_methods);
+router.use('/ticket/payment/cards', ticket_payment_card);
+router.use('/ticket/payment/methods', ticket_payment_methods)
 router.use('/passengers', passengers);
 router.use('/flight/crews', flight_crew);
 
