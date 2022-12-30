@@ -272,7 +272,7 @@ const getAccount = (req: Request, res: Response) => {
  *     post:
  *       summary: Login to an account
  *       tags:
- *         - login
+ *         - accounts
  *       requestBody:
  *         required: true
  *         content:

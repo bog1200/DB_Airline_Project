@@ -24,7 +24,7 @@ import moment from 'moment'; //for date formatting
  *                     content:
  *                         application/json:
  *                             schema:
- *                                 $ref: '#/components/schemas/Account'
+ *                                 $ref: '#/components/schemas/Flight'
  *                 '404':
  *                     description: No flight found
  *                     content:
