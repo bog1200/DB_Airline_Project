@@ -35,10 +35,7 @@ router.use('/api/v1/docs',v1docs);
 /** Error handling */
 router.use((req, res, next) => {
     // console.log(req);
-    const error = new Error('not found');
-    return res.status(404).json({
-        message: error.message
-    });
+    return res.status(204);
 });
 
 /** Server */
