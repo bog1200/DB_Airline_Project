@@ -10,6 +10,7 @@ import account_cards from './routes/account_card';
 import airport_gates from './routes/airport_gate';
 import country from "./routes/country";
 import airport_gate_types from './routes/airport_gate_type';
+import employees from './routes/employee';
 import jobs from "./routes/job";
 import cities from './routes/city';
 import luggage from "./routes/luggage";
@@ -32,6 +33,7 @@ router.use('/countries', country);
 router.use('/cities', cities);
 router.use('/luggages', luggage);
 router.use('/tickets', tickets);
+router.use('/employees', employees);
 router.use('/ticket/payments', ticket_payments);
 router.use('/ticket/payment/cards', ticket_payment_card);
 router.use('/ticket/payment/methods', ticket_payment_methods)
