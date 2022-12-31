@@ -249,4 +249,4 @@ const deleteTicketPaymentCard = async (req: Request, res: Response) => {
     });
 }
 
-export default { getTicketPaymentsCard, getTicketPaymentCard, searchTicketPaymentCard, addTicketPaymentCard, deleteTicketPaymentCard };
+export default {getTicketPaymentCard, searchTicketPaymentCard, addTicketPaymentCard, deleteTicketPaymentCard };
