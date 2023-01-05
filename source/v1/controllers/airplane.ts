@@ -65,6 +65,45 @@ const getAirplane = async (req: Request, res: Response) => {
     });
 
 }
+/**
+ * @openapi
+ * paths:
+ *   /airplane:
+ *     post:
+ *       summary: Create an airplane
+ *       tags:
+ *         - airplane
+ *       requestBody:
+ *         required: true
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Account'
+ *             example:
+ *               type: 1
+ *               reg_number: "YU-ABC"
+ *               country: 1
+ *       responses:
+ *         '201':
+ *           description: Airplane created
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 $ref: '#/components/schemas/Account'
+ *         '500':
+ *           description: Server error
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 $ref: '#/components/schemas/Error'
+ *         '400':
+ *           description: Bad request
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 $ref: '#/components/schemas/Error'
+ *
+ */
 
 const addAirplane = async (req: Request, res: Response) => {
 
@@ -124,7 +163,58 @@ const addAirplane = async (req: Request, res: Response) => {
 
 }
 
-
+/**
+ * @openapi
+ * paths:
+ *   /airplane:
+ *     put:
+ *       summary: Update an airplane
+ *       tags:
+ *         - airplane
+ *       parameters:
+ *         - in: query
+ *           name: id
+ *           required: true
+ *           schema:
+ *             type: string
+ *             format: id
+ *             description: The id of the airplane
+ *       requestBody:
+ *         required: true
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Airplane'
+ *             example:
+ *               type: 1
+ *               reg_number: "YU-ABC"
+ *               country: 1
+ *       responses:
+ *         '201':
+ *           description: Airplane modified
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 $ref: '#/components/schemas/Airplane'
+ *         '500':
+ *           description: Server error
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 $ref: '#/components/schemas/Error'
+ *         '400':
+ *           description: Bad request
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 $ref: '#/components/schemas/Error'
+ *         '409':
+ *           description: Registration Number already exists
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 $ref: '#/components/schemas/Error'
+ */
 
 const updateAirplane = async (req: Request, res: Response) => {
     const airplane: Airplane = req.body as Airplane;
@@ -161,7 +251,7 @@ const updateAirplane = async (req: Request, res: Response) => {
     if(airplane.reg_number){
         let result3: any = await query('SELECT * FROM AIRPLANE WHERE reg_number = ?', [airplane.reg_number])
         if (result3.length > 0) {
-            return res.status(400).json({
+            return res.status(409).json({
                 message: 'Bad request',
                 error: 'Airplane with this registration number already exists'
             });
@@ -205,6 +295,42 @@ const updateAirplane = async (req: Request, res: Response) => {
 
 }
 
+/**
+ * @openapi
+ * paths:
+ *     /airplane:
+ *         delete:
+ *             summary: Delete an airplane
+ *             tags:
+ *                 - airplane
+ *             parameters:
+ *                 - in: query
+ *                   name: id
+ *                   required: true
+ *                   schema:
+ *                     type: string
+ *                     format: id
+ *                     description: The id of the airplane
+ *             responses:
+ *                 '200':
+ *                     description: Airplane deleted
+ *                     content:
+ *                       application/json:
+ *                         schema:
+ *                           $ref: '#/components/schemas/Error'
+ *                 '404':
+ *                     description: No airplane found
+ *                     content:
+ *                         application/json:
+ *                             schema:
+ *                                 $ref: '#/components/schemas/Error'
+ *                 '500':
+ *                     description: Server error
+ *                     content:
+ *                         application/json:
+ *                             schema:
+ *                                 $ref: '#/components/schemas/Error'
+ */
 
 const deleteAirplane = async (req: Request, res: Response) => {
     const id = req.query.id;
@@ -222,10 +348,84 @@ const deleteAirplane = async (req: Request, res: Response) => {
                     error: 'Airplane not found'
                 });
             }
+        }).catch((error: any) => {
+            return res.status(500).json({
+                message: 'Internal server error',
+                error: error
             });
-
+        });
     }
-
+/**
+ * @openapi
+ *
+ * paths:
+ *   /airplane/search:
+ *     get:
+ *       summary: Search for airplane
+ *       tags:
+ *         - airplanes
+ *       parameters:
+ *         - name: city_id
+ *           in: query
+ *           description: ID of the city for the airplane
+ *           schema:
+ *             type: number
+ *             example: 0
+ *         - name: iata
+ *           in: query
+ *           description: IATA code for the airplane
+ *           schema:
+ *             type: string
+ *             example: "AMS"
+ *             minLength: 3
+ *             maxLength: 3
+ *             pattern: "^[A-Z]{3}$"
+ *         - name: icao
+ *           in: query
+ *           description: ICAO code for the airplane
+ *           schema:
+ *             type: string
+ *             example: "EHAM"
+ *             minLength: 4
+ *             maxLength: 4
+ *             pattern: "^[A-Z]{4}$"
+ *
+ *       responses:
+ *         200:
+ *           description: Success
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 type: object
+ *                 properties:
+ *                   message:
+ *                     type: string
+ *                     example: airplanes found
+ *                   data:
+ *                     type: array
+ *                     items:
+ *                       $ref: '#/components/schemas/airplane'
+ *         400:
+ *           description: Bad request
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 type: object
+ *                 properties:
+ *                   message:
+ *                     type: string
+ *                     example: Bad request
+ *         404:
+ *           description: airplane not found
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 type: object
+ *                 properties:
+ *                   message:
+ *                     type: string
+ *                     example: airplane not found
+ */
 const searchAirplanes = async (req: Request, res: Response) => {
     const reg_number = req.query.reg_number;
     const type = req.query.type;

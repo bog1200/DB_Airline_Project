@@ -17,6 +17,8 @@ import tickets from './routes/ticket';
 import ticket_payments from "./routes/ticket_payment";
 import ticket_payment_methods from './routes/ticket_payment_method';
 import passengers from './routes/passenger';
+import airplane_manufacturer from './routes/airplane_manufacturer';
+import airplane_types from './routes/airplane_type';
 
 
 router.use('/accounts', accounts);
@@ -33,6 +35,8 @@ router.use('/tickets', tickets);
 router.use('/ticket/payments', ticket_payments);
 router.use('/ticket/payment/methods', ticket_payment_methods);
 router.use('/passengers', passengers);
+router.use('/airplane/manufacturers', airplane_manufacturer);
+router.use('/airplane/types', airplane_types);
 
 
 export = router;
