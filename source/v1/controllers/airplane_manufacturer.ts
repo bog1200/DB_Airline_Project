@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import { ParsedQs } from 'qs';
 import {OkPacket, query, RowDataPacket} from '../../database'; //connect to the database
 import AirplaneManufacturer from "../interfaces/AirplaneManufacturer";
 
@@ -7,11 +6,11 @@ import AirplaneManufacturer from "../interfaces/AirplaneManufacturer";
 /**
  * @openapi
  * paths:
- *     /airplane_manufacturer:
+ *     /airplane/manufacturers:
  *         get:
  *             summary: Get an airplane manufacturer by id
  *             tags:
- *                 - airplane_manufacturer
+ *                - airplanes
  *             parameters:
  *                 - in: query
  *                   name: id
@@ -68,19 +67,17 @@ const getAirplaneManufacturer = async (req: Request, res: Response) => {
 /**
  * @openapi
  * paths:
- *   /airplane_manufacturer:
+ *   /airplane/manufacturers:
  *     post:
  *       summary: Create an airplane manufacturer
  *       tags:
- *         - airplane_manufacturer
+ *        - airplanes
  *       requestBody:
  *         required: true
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/AirplaneManufacturer'
- *             example:
- *               name: Boeing
  *       responses:
  *         '201':
  *           description: Airplane manufacturer created
@@ -101,11 +98,11 @@ const getAirplaneManufacturer = async (req: Request, res: Response) => {
  *               schema:
  *                 $ref: '#/components/schemas/Error'
  *         '409':
- *         description: Conflict
- *         content:
- *         application/json:
- *         schema:
- *         $ref: '#/components/schemas/Error'
+ *           description: Conflict
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 $ref: '#/components/schemas/Error'
  *
  */
 
@@ -115,7 +112,6 @@ const addAirplaneManufacturer = async (req: Request, res: Response) => {
     if(!airplane_manufacturer.name) {
         return res.status(400).json({
             message: 'Bad request',
-            error: 'Name is required'
         });
     }
 
@@ -146,18 +142,17 @@ const addAirplaneManufacturer = async (req: Request, res: Response) => {
 /**
  * @openapi
  * paths:
- *   /airplane_manufacturer:
+ *   /airplane/manufacturers:
  *     put:
  *       summary: Update an airplane manufacturer
  *       tags:
- *         - airplane_manufacturer
+ *        - airplanes
  *       parameters:
  *         - in: query
  *           name: id
  *           required: true
  *           schema:
- *             type: string
- *             format: id
+ *             format: integer
  *             description: The id of the airplane manufacturer
  *       requestBody:
  *         required: true
@@ -234,18 +229,17 @@ const updateAirplaneManufacturer = async (req: Request, res: Response) => {
 /**
  * @openapi
  * paths:
- *     /airplane_manufacturer:
+ *     /airplane/manufacturers:
  *         delete:
  *             summary: Delete an airplane manufacturer
  *             tags:
- *                 - airplane_manufacturer
+ *                - airplanes
  *             parameters:
  *                 - in: query
  *                   name: id
  *                   required: true
  *                   schema:
- *                     type: string
- *                     format: id
+ *                     type: integer
  *                     description: The id of the airplane manufacturer
  *             responses:
  *                 '200':
@@ -274,13 +268,13 @@ const deleteAirplaneManufacturer = async (req: Request, res: Response) => {
         .then((results:any) => {
             if(results.affectedRows > 0) {
                 return res.status(200).json({
-                    message: 'Airplane deleted'
+                    message: 'Airplane Manufacturer deleted'
                 });
             }
             else {
                 return res.status(404).json({
                     message: 'Bad request',
-                    error: 'Airplane not found'
+                    error: 'Airplane Manufacturer not found'
                 });
             }
         });
@@ -290,19 +284,18 @@ const deleteAirplaneManufacturer = async (req: Request, res: Response) => {
  * @openapi
  *
  * paths:
- *   /airplane_manufacturer/search:
+ *   /airplane/manufacturers/search:
  *     get:
  *       summary: Search for airplane manufacturers
  *       tags:
- *         - airplane_manufacturer
+ *        - airplanes
  *       parameters:
  *         - in: query
- *         name: name
- *         required: false
- *         schema:
- *         type: string
- *         description: The name of the airplane manufacturer
- *
+ *           name: name
+ *           required: true
+ *           schema:
+ *             type: string
+ *             description: The name of the airplane manufacturer
  *       responses:
  *         200:
  *           description: Success

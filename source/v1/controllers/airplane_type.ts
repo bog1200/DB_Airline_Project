@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import { ParsedQs } from 'qs';
 import {query, RowDataPacket} from '../../database'; //connect to the database
 import AirplaneType from "../interfaces/AirplaneType";
 
@@ -7,18 +6,18 @@ import AirplaneType from "../interfaces/AirplaneType";
 /**
  * @openapi
  * paths:
- *     /airplane_type:
+ *     /airplane/types:
  *         get:
  *             summary: Get an airplane type by id
  *             tags:
- *                 - airplane_type
+ *                 - airplanes
  *             parameters:
  *                 - in: query
- *                 name: id
- *                 schema:
- *                 type: integer
- *                 required: true
- *                 description: The id of the airplane type
+ *                   required: true
+ *                   name: id
+ *                   schema:
+ *                     type: integer
+ *                     description: The id of the airplane type
  *             responses:
  *                 '200':
  *                     description: An airplane type object
@@ -47,7 +46,7 @@ const getAirplaneType = async (req: Request, res: Response) => {
             if (results.length > 0) {
                 return res.status(200).json({
                     message: 'Airplane Type found',
-                    airplane_type: results[0] as AirplaneType //cast
+                    data: results[0] as AirplaneType //cast
                 });
             }
             else {
@@ -68,22 +67,17 @@ const getAirplaneType = async (req: Request, res: Response) => {
 /**
  * @openapi
  * paths:
- *   /airplane_type:
+ *   /airplane/types:
  *     post:
  *       summary: Create an airplane type
  *       tags:
- *         - airplane_type
+ *         - airplanes
  *       requestBody:
  *         required: true
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/AirplaneType'
- *             example:
- *               name: Boeing 737
- *               manufacturer: 1
- *               seats: 150
- *               range_km: 5000
  *       responses:
  *         '201':
  *           description: Airplane Type created
@@ -104,20 +98,19 @@ const getAirplaneType = async (req: Request, res: Response) => {
  *               schema:
  *                 $ref: '#/components/schemas/Error'
  *         '409':
- *         description: Conflict
- *         content:
- *         application/json:
- *         schema:
- *         $ref: '#/components/schemas/Error'
+ *           description: Conflict
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 $ref: '#/components/schemas/Error'
  *
  */
 const addAirplaneType = async (req: Request, res: Response) => {
-    const airplane_type = req.body;
+    const airplane_type = req.body as AirplaneType;
 
 if(!airplane_type.name || !airplane_type.manufacturer || !airplane_type.seats || !airplane_type.range_km) {
         return res.status(400).json({
-            message: 'Bad request',
-            error: 'Parameters required'
+            message: 'Bad request'
         });
     }
 
@@ -158,18 +151,17 @@ if(!airplane_type.name || !airplane_type.manufacturer || !airplane_type.seats ||
 /**
  * @openapi
  * paths:
- *   /airplane_type:
+ *   /airplane/types:
  *     put:
  *       summary: Update an airplane type
  *       tags:
- *         - airplane_type
+ *         - airplanes
  *       parameters:
  *         - in: query
  *           name: id
  *           required: true
  *           schema:
- *             type: string
- *             format: id
+ *             type: integer
  *             description: The id of the airplane type
  *       requestBody:
  *         required: true
@@ -177,11 +169,6 @@ if(!airplane_type.name || !airplane_type.manufacturer || !airplane_type.seats ||
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/AirplaneType'
- *             example:
- *               name: Boeing 737
- *               manufacturer: 1
- *               seats: 150
- *               range_km: 5000
  *       responses:
  *         '201':
  *           description: Airplane Type modified
@@ -213,39 +200,15 @@ const updateAirplaneType = async (req: Request, res: Response) => {
     const id = req.query.id;
     const airplane_type = req.body;
 
-    if(!airplane_type.name || !airplane_type.manufacturer || !airplane_type.seats || !airplane_type.range_km) {
-        return res.status(400).json({
-            message: 'Bad request',
-            error: 'Name is required'
-        });
-    }
-
-    let query_string = 'UPDATE AIRPLANE_TYPE SET ';
-    let query_params: any[] = [];
-    let result: any = await query('SELECT * FROM AIRPLANE_TYPE WHERE id = ?', [id])
-
-    if (result.length == 0) {
+    if(!airplane_type.name && !airplane_type.manufacturer && !airplane_type.seats && !airplane_type.range_km) {
         return res.status(400).json({
             message: 'Bad request'
         });
     }
-
-    const current_airplane_type: RowDataPacket[] = <RowDataPacket[]> await query('SELECT * FROM AIRPLANE_TYPE WHERE name = ? AND manufacturer = ? AND seats = ? AND range_km = ?', [airplane_type.name, airplane_type.manufacturer, airplane_type.seats, airplane_type.range_km]);
-
-    if(current_airplane_type.length > 0) {
-        return res.status(409).json({
-            message: 'Conflict',
-            error: 'Airplane Type already exists'
-        });
-    }
-
-
-    const airplane_manufacturer_is_good: RowDataPacket[] = <RowDataPacket[]> await query('SELECT * FROM AIRPLANE_MANUFACTURER WHERE id = ?', [airplane_type.manufacturer]);
-
-    if(airplane_manufacturer_is_good.length == 0) {
+    let current_airplane_type: any = await query('SELECT * FROM AIRPLANE_TYPE WHERE id = ?', [id])
+    if (current_airplane_type.length == 0) {
         return res.status(400).json({
-            message: 'Bad request',
-            error: 'Airplane manufacturer does not exist'
+            message: 'Bad request'
         });
     }
 
@@ -279,6 +242,16 @@ const updateAirplaneType = async (req: Request, res: Response) => {
         params.push(airplane_type.range_km);
     }
 
+
+    const check: RowDataPacket[] = <RowDataPacket[]> await query('SELECT * FROM AIRPLANE_TYPE WHERE name = ? AND manufacturer = ? AND seats = ? AND range_km = ?', [airplane_type.name||current_airplane_type[0].name, airplane_type.manufacturer||current_airplane_type[0].manufacturer, airplane_type.seats||current_airplane_type[0].seats, airplane_type.range_km||current_airplane_type[0].range_km]);
+
+    if(check.length > 0) {
+        return res.status(409).json({
+            message: 'Bad request',
+            error: 'Airplane Type already exists'
+        });
+    }
+
     sql = sql.slice(0, -2);
 
     sql += ' WHERE id = ?';
@@ -302,18 +275,17 @@ const updateAirplaneType = async (req: Request, res: Response) => {
 /**
  * @openapi
  * paths:
- *     /airplane_type:
+ *     /airplane/types:
  *         delete:
  *             summary: Delete an airplane type
  *             tags:
- *                 - airplane_type
+ *                 - airplanes
  *             parameters:
  *                 - in: query
  *                   name: id
  *                   required: true
  *                   schema:
- *                     type: string
- *                     format: id
+ *                     type: integer
  *                     description: The id of the airplane type
  *             responses:
  *                 '200':
@@ -342,13 +314,13 @@ const deleteAirplaneType = async (req: Request, res: Response) => {
 
     if(deleted_airplane_type.affectedRows > 0) {
         return res.status(200).json({
-            message: 'Airplane deleted'
+            message: 'Airplane Type deleted'
         });
     }
     else {
-        return res.status(500).json({
+        return res.status(404).json({
             message: 'Internal server error',
-            error: 'Could not delete airplane'
+            error: 'Could not delete Airplane Type'
         });
     }
 }
@@ -357,44 +329,27 @@ const deleteAirplaneType = async (req: Request, res: Response) => {
  * @openapi
  *
  * paths:
- *   /airplane_type/search:
+ *   /airplane/types/search:
  *     get:
  *       summary: Search for airplane types
  *       tags:
- *         - airplane_type
+ *         - airplanes
  *       parameters:
- *         - in: query
- *         name: name
- *         schema:
- *         type: string
- *          description: The name of the airplane type
- *          required: false
- *          example: Boeing 737
- *
  *          - in: query
- *          name: manufacturer
- *          schema:
- *          type: string
- *          description: The manufacturer of the airplane type
- *          required: false
- *          example: Boeing
- *
+ *            name: manufacturer
+ *            schema:
+ *              type: integer
+ *              description: The id of the manufacturer of the airplane type
  *          - in: query
- *          name: seats
- *          schema:
- *          type: integer
- *          description: The number of seats of the airplane type
- *          required: false
- *          example: 200
- *
+ *            name: seats
+ *            schema:
+ *              type: integer
+ *              description: The number of seats of the airplane type
  *          - in: query
- *          name: range_km
- *          schema:
- *          type: integer
- *          description: The range of the airplane type
- *          required: false
- *          example: 10000
- *
+ *            name: range_km
+ *            schema:
+ *              type: integer
+ *              description: The range of the airplane type
  *       responses:
  *         200:
  *           description: Success
@@ -433,15 +388,14 @@ const deleteAirplaneType = async (req: Request, res: Response) => {
  */
 
 const searchAirplaneTypes = async (req: Request, res: Response) => {
-    const name = req.body.name;
-    const manufacturer_id = req.body.manufacturer_id;
-    const seats = req.body.seats;
-    const range = req.body.range;
+    const name = req.query.name;
+    const manufacturer = req.query.manufacturer;
+    const seats = req.query.seats;
+    const range_km = req.query.range_km;
 
-    if(!name && !manufacturer_id && !seats && !range) {
+    if(!name && !manufacturer && !seats && !range_km) {
         return res.status(400).json({
             message: 'Bad request',
-            error: 'Missing parameters'
         });
     }
 
@@ -454,12 +408,12 @@ const searchAirplaneTypes = async (req: Request, res: Response) => {
         params.push(name);
     }
 
-    if(manufacturer_id) {
+    if(manufacturer) {
         if(params.length > 0) {
             sql += ' AND ';
         }
-        sql += 'manufacturer_id = ? ';
-        params.push(manufacturer_id);
+        sql += 'manufacturer = ? ';
+        params.push(manufacturer);
     }
 
     if(seats) {
@@ -470,12 +424,12 @@ const searchAirplaneTypes = async (req: Request, res: Response) => {
         params.push(seats);
     }
 
-    if(range) {
+    if(range_km) {
         if(params.length > 0) {
             sql += ' AND ';
         }
         sql += 'range = ?';
-        params.push(range);
+        params.push(range_km);
     }
 
     const results: RowDataPacket[] = <RowDataPacket[]> await query(sql, params);
@@ -483,7 +437,7 @@ const searchAirplaneTypes = async (req: Request, res: Response) => {
     if(results.length > 0) {
         return res.status(200).json({
             message: 'Airplane Type found',
-            airplane_types: results
+            data: results
         });
     }
     else {

@@ -1,9 +1,7 @@
 import { Request, Response } from 'express';
-import { ParsedQs } from 'qs';
-import {query} from '../../database'; //connect to the database
+import {query, OkPacket, RowDataPacket } from '../../database'; //connect to the database
 import Airplane from "../interfaces/Airplane";
-import AirportGate from "../interfaces/AirportGate"; //import the interface
-
+import AirportGate from "../interfaces/AirportGate";
 /**
  * @openapi
  * paths:
@@ -48,7 +46,7 @@ const getAirplane = async (req: Request, res: Response) => {
         if (results.length > 0) {
             return res.status(200).json({
                 message: 'Airplane found',
-                airport_gate: results[0] as AirportGate //cast
+                data: results[0] as AirportGate //cast
             });
         } else {
             return res.status(404).json({
@@ -68,28 +66,24 @@ const getAirplane = async (req: Request, res: Response) => {
 /**
  * @openapi
  * paths:
- *   /airplane:
+ *   /airplanes:
  *     post:
  *       summary: Create an airplane
  *       tags:
- *         - airplane
+ *         - airplanes
  *       requestBody:
  *         required: true
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Account'
- *             example:
- *               type: 1
- *               reg_number: "YU-ABC"
- *               country: 1
+ *               $ref: '#/components/schemas/Airplane'
  *       responses:
  *         '201':
  *           description: Airplane created
  *           content:
  *             application/json:
  *               schema:
- *                 $ref: '#/components/schemas/Account'
+ *                 $ref: '#/components/schemas/Airplane'
  *         '500':
  *           description: Server error
  *           content:
@@ -114,12 +108,11 @@ const addAirplane = async (req: Request, res: Response) => {
 
     if (!airplane.type || !airplane.reg_number || !airplane.country) {
         return res.status(400).json({
-            message: 'Bad request',
-            error: 'Missing parameters'
+            message: 'Bad request'
         });
     }
 
-    const current_airplane: any = await query('SELECT * FROM AIRPLANE WHERE reg_number = ? AND type = ? AND country = ?', [airplane.reg_number, airplane.type, airplane.country]);
+    const current_airplane: RowDataPacket[] = <RowDataPacket[]> await query('SELECT * FROM AIRPLANE WHERE reg_number = ? AND type = ? AND country = ?', [airplane.reg_number, airplane.type, airplane.country]);
 
     if(current_airplane.length > 0) {
         return res.status(400).json({
@@ -128,7 +121,7 @@ const addAirplane = async (req: Request, res: Response) => {
         });
     }
 
-    const airplane_type_is_good: any = await query('SELECT id FROM AIRPLANE_TYPE WHERE id = ?', [airplane.type]);
+    const airplane_type_is_good: RowDataPacket[] = <RowDataPacket[]> await query('SELECT id FROM AIRPLANE_TYPE WHERE id = ?', [airplane.type]);
 
     if(airplane_type_is_good.length == 0) {
         return res.status(400).json({
@@ -137,7 +130,7 @@ const addAirplane = async (req: Request, res: Response) => {
         });
     }
 
-    const airplane_country_is_good: any = await query('SELECT id FROM COUNTRY WHERE id = ?', [airplane.country]);
+    const airplane_country_is_good: RowDataPacket[] = <RowDataPacket[]> await query('SELECT id FROM COUNTRY WHERE id = ?', [airplane.country]);
 
     if(airplane_country_is_good.length == 0) {
         return res.status(400).json({
@@ -146,7 +139,7 @@ const addAirplane = async (req: Request, res: Response) => {
         });
     }
 
-    const new_airplane: any = await query('INSERT INTO AIRPLANE SET ?', [airplane]);
+    const new_airplane: OkPacket = <OkPacket> await query('INSERT INTO AIRPLANE (reg_number, type, country) values (?,?,?)', [airplane.reg_number, airplane.type, airplane.country]);
 
     if(new_airplane.affectedRows > 0) {
         return res.status(200).json({
@@ -166,18 +159,17 @@ const addAirplane = async (req: Request, res: Response) => {
 /**
  * @openapi
  * paths:
- *   /airplane:
+ *   /airplanes:
  *     put:
  *       summary: Update an airplane
  *       tags:
- *         - airplane
+ *         - airplanes
  *       parameters:
  *         - in: query
  *           name: id
  *           required: true
  *           schema:
- *             type: string
- *             format: id
+ *             type: integer
  *             description: The id of the airplane
  *       requestBody:
  *         required: true
@@ -228,16 +220,16 @@ const updateAirplane = async (req: Request, res: Response) => {
 
     let query_string = 'UPDATE AIRPLANE SET ';
     let query_params: any[] = [];
-    let result: any = await query('SELECT * FROM AIRPLANE WHERE id = ?', [id])
+    let check: RowDataPacket[] = <RowDataPacket[]> await query('SELECT * FROM AIRPLANE WHERE id = ?', [id])
 
-    if (result.length == 0) {
+    if (check.length == 0) {
         return res.status(400).json({
             message: 'Bad request'
         });
     }
 
     if(airplane.type){
-        let result2: any = await query('SELECT * FROM AIRPLANE_TYPE WHERE id = ?', [airplane.type])
+        let result2: RowDataPacket[] = <RowDataPacket[]> await query('SELECT * FROM AIRPLANE_TYPE WHERE id = ?', [airplane.type])
         if (result2.length == 0) {
             return res.status(400).json({
                 message: 'Bad request',
@@ -249,7 +241,7 @@ const updateAirplane = async (req: Request, res: Response) => {
     }
 
     if(airplane.reg_number){
-        let result3: any = await query('SELECT * FROM AIRPLANE WHERE reg_number = ?', [airplane.reg_number])
+        let result3: RowDataPacket[] = <RowDataPacket[]> await query('SELECT * FROM AIRPLANE WHERE reg_number = ?', [airplane.reg_number])
         if (result3.length > 0) {
             return res.status(409).json({
                 message: 'Bad request',
@@ -261,7 +253,7 @@ const updateAirplane = async (req: Request, res: Response) => {
     }
 
     if(airplane.country){
-        let result4: any = await query('SELECT * FROM COUNTRY WHERE id = ?', [airplane.country])
+        let result4: RowDataPacket[] = <RowDataPacket[]> await query('SELECT * FROM COUNTRY WHERE id = ?', [airplane.country])
         if (result4.length == 0) {
             return res.status(400).json({
                 message: 'Bad request',
@@ -278,7 +270,7 @@ const updateAirplane = async (req: Request, res: Response) => {
     query_string += ' WHERE id = ?';
     query_params.push(id);
 
-    result = await query(query_string, query_params);
+    const result: OkPacket = <OkPacket> await query(query_string, query_params);
 
     if(result.affectedRows > 0) {
         return res.status(200).json({
@@ -298,11 +290,11 @@ const updateAirplane = async (req: Request, res: Response) => {
 /**
  * @openapi
  * paths:
- *     /airplane:
+ *     /airplanes:
  *         delete:
  *             summary: Delete an airplane
  *             tags:
- *                 - airplane
+ *                 - airplanes
  *             parameters:
  *                 - in: query
  *                   name: id
@@ -359,37 +351,27 @@ const deleteAirplane = async (req: Request, res: Response) => {
  * @openapi
  *
  * paths:
- *   /airplane/search:
+ *   /airplanes/search:
  *     get:
  *       summary: Search for airplane
  *       tags:
  *         - airplanes
  *       parameters:
- *         - name: city_id
+ *         - name: reg_number
  *           in: query
- *           description: ID of the city for the airplane
- *           schema:
- *             type: number
- *             example: 0
- *         - name: iata
- *           in: query
- *           description: IATA code for the airplane
+ *           description: The registration number of the airplane
  *           schema:
  *             type: string
- *             example: "AMS"
- *             minLength: 3
- *             maxLength: 3
- *             pattern: "^[A-Z]{3}$"
- *         - name: icao
+ *         - name: type
  *           in: query
- *           description: ICAO code for the airplane
+ *           description: ID of the airplane type
  *           schema:
- *             type: string
- *             example: "EHAM"
- *             minLength: 4
- *             maxLength: 4
- *             pattern: "^[A-Z]{4}$"
- *
+ *             type: integer
+ *         - name: country
+ *           in: query
+ *           description: ID of the country
+ *           schema:
+ *             type: integer
  *       responses:
  *         200:
  *           description: Success
@@ -462,12 +444,12 @@ const searchAirplanes = async (req: Request, res: Response) => {
         params.push(country);
     }
 
-    query(sql, [params])
+    query(sql, params)
         .then((results:any) => {
             if(results.length > 0) {
                 return res.status(200).json({
                     message: 'Airplanes found',
-                    airplanes: results as Airplane[] //cast
+                    data: results as Airplane[] //cast
                 });
             }
             else {

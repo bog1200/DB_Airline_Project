@@ -22,6 +22,7 @@ import passengers from './routes/passenger';
 import airplane_manufacturer from './routes/airplane_manufacturer';
 import airplane_types from './routes/airplane_type';
 import flight_crew from "./routes/flight_crew";
+import airplane from './routes/airplane';
 
 
 router.use('/accounts', accounts);
@@ -43,6 +44,7 @@ router.use('/passengers', passengers);
 router.use('/airplane/manufacturers', airplane_manufacturer);
 router.use('/airplane/types', airplane_types);
 router.use('/flight/crews', flight_crew);
+router.use('/airplanes', airplane);
 
 
 export = router;
