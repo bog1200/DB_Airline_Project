@@ -39,7 +39,7 @@ const options = {
             }
         ],
     },
-    apis: ['./source/v1/**/*.ts', './source/v1/**/*.js'],
+    apis: ['./source/v1/**/*.ts', './build/v1/**/*.js'],
 };
 const specs = swaggerJSDoc(options);
 // console.log(specs);
