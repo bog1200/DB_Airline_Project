@@ -338,7 +338,7 @@ const loginAccount = (req: Request, res: Response) => {
 
             res.status(200).json({
                 message: 'Authentication successful',
-                account: account
+                data: account as Account
             });
         })
         .catch((err: any) => {

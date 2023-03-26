@@ -45,7 +45,7 @@ const getAirport = (req: Request, res: Response) => {
             if (result.length > 0) {
                 res.status(200).json({
                     message: 'Airport found',
-                    airport: result[0] as Airport //cast
+                    data: result[0] as Airport //cast
                 });
             } else {
                 res.status(404).json({
@@ -169,7 +169,7 @@ const searchAirports = (req: Request, res: Response) => {
         } else {
             res.status(200).json({
                 message: 'Airport found',
-                airports: result as Airport[]
+                data: result as Airport[]
             });
         }
     }
@@ -244,7 +244,7 @@ const addAirport = (req: Request, res: Response) => {
                             .then((result: any) => {
                                 res.status(201).json({
                                     message: 'Airport added',
-                                    airport: result[0] as Airport
+                                    data: result[0] as Airport
                                 });
                             })
                     }

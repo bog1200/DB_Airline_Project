@@ -46,7 +46,7 @@ const getFlight = (req: Request, res: Response) => {
 
                 res.status(200).json({
                     message: 'Flight found',
-                    flight: result[0] as Flight //cast
+                    data: result[0] as Flight //cast
                 });
             } else {
                 res.status(404).json({
@@ -421,12 +421,12 @@ const searchFlights = (req: Request, res: Response) => {
             if (result.length == 0) {
                 return res.status(404).json({
                     message: 'Flight not found',
-                    flights: {}
+                    data: {}
                 });
             }
             res.status(200).json({
                 message: 'Flights found',
-                flights: result as Flight[]
+                data: result as Flight[]
             })
         })
 };
