@@ -46,7 +46,7 @@ const getAirportGate = (req: Request, res: Response) => {
                 if (result.length > 0) {
                     return res.status(200).json({
                         message: 'Airport gate found',
-                        airport_gate: result[0] as AirportGate //cast
+                        data: result[0] as AirportGate //cast
                     });
                 } else {
                     return res.status(404).json({

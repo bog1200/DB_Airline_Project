@@ -150,7 +150,7 @@ const addAirportGateType = (req: Request, res: Response) => {
                 .then((result: any) => {
                     return res.status(200).json({
                         message: 'Airport gate type added',
-                        airport_gate_type: result[0] as AirportGateType //cast
+                        data: result[0] as AirportGateType //cast
                     });
                 }).catch((err: any) => {
                     return res.status(500).json({
@@ -229,7 +229,7 @@ const updateAirportGateType = (req: Request, res: Response) => {
                 .then((result: any) => {
                     return res.status(201).json({
                         message: 'Airport gate type modified',
-                        airport_gate_type: result[0] as AirportGateType //cast
+                        data: result[0] as AirportGateType //cast
                     });
                 }).catch((err: any) => {
                 return res.status(500).json({

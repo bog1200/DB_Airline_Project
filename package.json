@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon source/server.ts",
-    "build": "rm -rf build/ && prettier --write source/ && tsc"
+    "dev": "nodemon api/server.ts",
+    "build": "rm -rf build/ && prettier --write api/ && tsc"
   },
   "repository": {
     "type": "git",

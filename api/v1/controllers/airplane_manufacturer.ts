@@ -46,7 +46,7 @@ const getAirplaneManufacturer = async (req: Request, res: Response) => {
             if (results.length > 0) {
                 return res.status(200).json({
                     message: 'Airplane Manufacturer found',
-                    airport_manufacturer: results[0] as AirplaneManufacturer //cast
+                    data: results[0] as AirplaneManufacturer //cast
                 });
             }
             else {
@@ -351,7 +351,7 @@ const searchAirplaneManufacturers = async (req: Request, res: Response) => {
             if(results.length > 0) {
                 return res.status(200).json({
                     message: 'Airplane Manufacturer found',
-                    airplane_manufacturer: results as AirplaneManufacturer[]
+                    data: results as AirplaneManufacturer[]
                 });
             }
             else {
