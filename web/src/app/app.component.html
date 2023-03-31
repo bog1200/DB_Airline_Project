@@ -1,0 +1,39 @@
+<nav class="header container-fluid">
+  <div class="row">
+      <div class="col-2 col-md-2">
+      <div class="logo px-2">
+        <a routerLink=""><img src="assets/DB_Logo_inverted.svg" alt="logo" width="160"></a>
+      </div>
+    </div>
+      <div class="col-10 col-md-10 navbar navbar-expand-md navbar-light">
+        <div class="container-fluid ">
+        <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#n_bar" aria-controls="navbarNavAltMarkup" aria-label="Toggle navigation">
+           <span class="navbar-toggler-icon"></span>
+        </button>
+        <div id="n_bar" class="menu collapse navbar-collapse justify-content-end">
+          <ul class="navbar-nav ">
+            <li class="nav-item"><a class="nav-link" routerLink="" href="/about">My flights</a></li>
+            <li class="nav-item"><a class="nav-link" routerLink="account"href="/contact">My account</a></li>
+            <li class="nav-item"><a class="nav-link" href="mailto:bog1200@duck.com">Contact</a></li>
+            <li *ngIf="!account?.uuid; else logout" class="nav-item me-2"><a id="login-button" class="nav-link" routerLink="login">Login</a></li>
+            <ng-template #logout>
+              <li class="nav-item me-2"><a id="logout-button" class="nav-link" (click)="log_out()" >Logout</a></li>
+            </ng-template>
+          </ul>
+        </div>
+      </div>
+      </div>
+  </div>
+</nav>
+<router-outlet>
+
+</router-outlet>
+<div class="footer container-fluid">
+  <div class="row">
+    <div class="col-md-12 text-center">
+      <p>Disclaimer: Please note that this is not the final version of the website. Current version: <b>31.03.2023</b></p>
+      <p>© Copyright <a href="https://github.com/bog1200/DB_Airline_Project/graphs/contributors">DB Airlines Team</a> 2023 </p>
+    </div>
+  </div>
+</div>
+

@@ -1,0 +1,25 @@
+/* You can add global styles to this file, and also import other style files */
+:root, html, body{
+    --primary-color: #ffa458;
+    --secondary-color: #fff;
+    --tertiary-color: #FFC84D;
+    --quaternary-color: #FF694D;
+
+
+  /*color: var(--secondary-color);*/
+  /*background-color: var(--primary-color);*/
+  font-family: Didact Gothic, sans-serif !important;
+
+  /*border: solid #5B6DCD 10px;*/
+
+}
+.container-fluid{
+  padding-left: 0rem;
+  padding-right: 0rem;
+  overflow: hidden;
+}
+/*:host {*/
+/*  height: 100%;*/
+/*  box-sizing: border-box;*/
+/*}*/
+

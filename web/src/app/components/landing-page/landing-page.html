@@ -1,0 +1,34 @@
+<div class="landing-page container-fluid">
+  <div class="row">
+    <div class="col-12">
+      <div class="jumbotron ms-3 mt-4 mx-md-3">
+        <h1>Hello, {{account?.first_name || "Visitor"}} !</h1>
+        <h2>Welcome to DB Airlines.</h2>
+        <p>Book your flight now!</p>
+      </div>
+      </div>
+  </div>
+    <div class="row mt-2">
+        <div class="col-12">
+      <form id="searchFlightForm" [formGroup]="flightSearchForm">
+        <label for="from">From </label><br>
+<!--        dropdown-->
+        <select #from formControlName="origin" id="from" [(ngModel)]="OriginText"  (change) ="getDestinations(from.value)" required>
+          <option [value]=""> --- Select Origin --- </option>
+         <option *ngFor="let airportCityPair of airportPairs" [value]="airportCityPair.airport.id">{{airportCityPair.airport.name}} - {{airportCityPair.city.name}}</option>
+        </select>
+        <br>
+        <label>To </label><br>
+        <select formControlName="destination" id="to">
+          <option [value]=""> --- Select Destination --- </option>
+          <option *ngFor="let destinationPair of destinationAirportPairs" [value]="destinationPair.airport.id">{{destinationPair.airport.name}} - {{destinationPair.city.name}}</option>
+
+        </select>
+        <br>
+        <label for="departureDate">Departure Date </label><br>
+        <input type="date" [min]="tomorrow" formControlName="departureDate" id="departureDate" required>
+        <input type="submit" [disabled]="!flightSearchForm.valid" (click)="searchFlight()" value="Search">
+      </form>
+      </div>
+    </div>
+</div>

@@ -1,0 +1,41 @@
+<div id="login-page" class="container-fluid">
+    <h1>Login</h1>
+    <div class="row">
+        <div class="col-3">
+        </div>
+
+      <div class="col-6">
+        <form id="login-form" [formGroup]="loginForm">
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" class="form-control" id="email" formControlName="email" required>
+          </div>
+            <div *ngIf="loginForm.invalid && (loginForm.dirty || loginForm.touched)"
+                 class="alert">
+
+                <div *ngIf="loginForm.errors?.['required']">
+                    Email and password are required.
+                </div>
+            </div>
+            <br>
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" class="form-control" id="password" formControlName="password" required>
+          </div>
+            <br>
+            <div>
+                <input id="login-button" type="submit" class="btn" [disabled]="!loginForm.valid" (click)="login()" value="Log in">
+            </div>
+            <div *ngIf="error">
+                <p>{{error}}</p>
+            </div>
+
+        </form>
+          <p>If you don't have an account, you can create one by pressing here: <a id="register-button" routerLink="/register">Register</a></p>
+      </div>
+    </div>
+
+  <div class="col-3">
+  </div>
+
+</div>

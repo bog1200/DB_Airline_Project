@@ -1,0 +1,61 @@
+<div id="purchase-page" class="container-fluid">
+    <div class="row">
+        <div class="col-md-12 d-flex justify-content-center">
+          <h1>Buy tickets</h1>
+        </div>
+    </div>
+    <div class="row">
+      <div class="col-10 offset-1">
+        <h3>Flight Info:</h3>
+        <div id="flight-info" class="container-fluid">
+          <p>Flight id: {{flight.id}}</p>
+          <p>Departure: {{flight.origin_id}}</p>
+          <p>Arrival: {{flight.destination_id}}</p>
+          <p>Departure time: {{flight.departure_time}}</p>
+          <p>Arrival time: {{flight.arrival_time}}</p>
+          <p>Price: {{flight.price}}</p>
+        </div>
+      </div>
+    </div>
+  <div class="row">
+    <div class="col-8 offset-2">
+      <h3>Passenger Info:</h3>
+      <form action="/purchase" method="post">
+      <div id="passenger-info" class="container-fluid">
+
+          <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" class="form-control" id="name" name="name" placeholder="Enter name">
+          </div>
+          <div class="form-group">
+            <label for="email">Email address</label>
+            <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp" placeholder="Enter email">
+          </div>
+          <div class="form-group">
+            <label for="phone">Phone</label>
+            <input type="text" class="form-control" id="phone" name="phone" placeholder="Enter phone">
+          </div>
+          <div class="form-group">
+            <label for="address">Address</label>
+            <input type="text" class="form-control" id="address" name="address" placeholder="Enter address">
+          </div>
+
+
+
+      </div>
+      <div class="row mt-3">
+        <div class="col-12 col-md-4 d-flex justify-content-center">
+          <button type="button" class="btn btn-danger mt-2">Back</button>
+        </div>
+        <div class="col-12 col-md-4 d-flex justify-content-center">
+          <button type="button" class="btn btn-secondary me-1 mt-2">Remove Passenger</button>
+          <button type="button" class="btn btn-secondary mt-2">Add Passenger</button>
+        </div>
+        <div class="col-12 col-md-4 d-flex justify-content-center">
+          <button type="button" class="btn btn-success mt-2">Purchase</button>
+        </div>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>

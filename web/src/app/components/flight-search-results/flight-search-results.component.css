@@ -1,0 +1,27 @@
+p{
+  color: var(--primary-color);
+  font-family: Didact Gothic, sans-serif;
+}
+#flightResultsPage{
+
+  text-align:center;
+
+}
+input{
+  background-color: var(--primary-color);
+  color:var(--secondary-color);
+  padding: 10px;
+  margin: 10px;
+  white-space: normal;
+  border-radius: 20px;
+  border: none;
+
+}
+.flight{
+  background-color: var(--secondary-color);
+  color:var(--primary-color);
+  border-radius: 20px;
+  border: none;
+  padding-top: 2%;
+  text-align: center;
+}

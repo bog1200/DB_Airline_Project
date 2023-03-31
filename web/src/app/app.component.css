@@ -1,0 +1,48 @@
+.header{
+    background-color: var(--primary-color);
+    color: #fff;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--tertiary-color);
+}
+/*.menu ul {*/
+/*    list-style-type: none;*/
+/*    margin: 0;*/
+/*    padding: 0;*/
+/*    overflow: hidden;*/
+/*}*/
+/*.menu li {*/
+/*    float: left;*/
+/*    color: white;*/
+/*}*/
+/*:host {*/
+/*  height: 100%*/
+/*}*/
+
+.menu li a {
+    display: block;
+    color: white;
+    text-align: center;
+    font-size: 20px;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+#login-button, #logout-button{
+    cursor: pointer;
+}
+.footer{
+  background-color: var(--primary-color);
+  color: #fff;
+  padding-top: 10px;
+  border-top: 1px solid var(--tertiary-color);
+  width: 100%;
+  max-height: 100px;
+  min-height: 60px; /* Set the fixed height of the footer here */
+  line-height: 30px; /* Vertically center the text there */
+}
+.footer a{
+    color: #ffa;
+    text-decoration: underline;
+}
+
+

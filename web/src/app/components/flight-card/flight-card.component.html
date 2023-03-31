@@ -1,0 +1,20 @@
+<div class="container-fluid flightcard mx-2" (click)="buy(flight)">
+  <div class="row">
+    <h3 class="">Flight no. {{flight.id}}</h3>
+  </div>
+  <div class="row">
+    <div class="col-6">
+      <h6 class="mb-2">From: {{originName}}</h6>
+      <h6 class="mb-2">Departure time: {{flight.departure_time}}</h6>
+    </div>
+    <div class="col-6">
+      <h6 class="mb-2 ">To: {{destinationName}}</h6>
+      <h6 class="mb-2">Arrival time: {{flight.arrival_time}}</h6>
+  </div>
+  </div>
+  <div class="row">
+    <h6 class="mb-2">Price: {{flight.price}} €</h6>
+  </div>
+  <div class="row">
+    <h6 class="mb-2">Available seats: {{available_seats}}</h6>
+</div>

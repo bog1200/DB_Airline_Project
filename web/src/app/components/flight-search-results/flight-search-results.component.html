@@ -1,0 +1,44 @@
+<div id="flightResultsPage" class="container-fluid mb-3 mt-3">
+  <div class="row">
+    <div class="col-md-12">
+      <h1>Flights from {{from}} to {{to}} on {{date}}</h1>
+    </div>
+  </div>
+
+
+  <div *ngFor="let flight of flightsPage;" class="container-fluid flight mb-2 mt-2">
+    <div class="row">
+      <div class="col-2 col-md-4"></div>
+      <div class="col-8 col-md-4">
+      <flight-card [flight]="flight"></flight-card>
+    </div>
+    <div class="col-2 col-md-4"></div>
+  </div>
+  </div>
+  <br>
+  <div *ngIf="flights.length>0" class="container-fluid mb-2 mt-2">
+    <div  class="row">
+      <div class="col-4 col-md-5">
+        <input *ngIf="page>1" type="button" class="btn" value="Previous page" (click)="previousPage()">
+      </div>
+      <div class="col-4 col-md-2">
+        <p>Page {{page}} of {{Pages()}}</p>
+      </div>
+      <div class="col-4 col-md-5">
+        <input *ngIf="page<Pages()" type="button" class="btn" (click)="nextPage()" value="Next page ">
+      </div>
+    </div>
+  </div>
+  <div *ngIf="!flights.length" class="row">
+    <div class="col-md-12">
+     <p>
+       We are sorry, but no flights were found.
+     </p>
+      <p>
+        You can try to search again.
+      </p>
+      <input type="button" class="btn" value="Search again" routerLink="/">
+    </div>
+</div>
+
+</div>
