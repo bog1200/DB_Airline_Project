@@ -32,7 +32,10 @@ import Job from "../interfaces/Job";
  */
 const getJobs =  (req: Request, res: Response) => {
     query('SELECT * FROM JOB')
-        .then((result: any) => res.status(200).json(result as Job[]))
+        .then((result: any) => res.status(200).json({
+            message: 'Jobs found',
+            data: result as Job[]
+        }))
         .catch((err: any) => {
             return res.status(500).json({
                 message: 'Server error',
@@ -90,7 +93,10 @@ const getJob = (req: Request, res: Response) => {
                     message: 'Job not found'
                 });
             } else {
-                res.status(200).json(result as Job[]);
+                res.status(200).json({
+                    message: 'Job found',
+                    data: result[0] as Job
+                });
             }
         });
 }

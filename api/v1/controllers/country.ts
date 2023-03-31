@@ -26,7 +26,10 @@ import Country from "../interfaces/Country";
  */
 const getCountries = (req: Request, res: Response) => {
     query('SELECT * FROM COUNTRY')
-        .then((result: any) => res.status(200).json(result as Country[]))
+        .then((result: any) => res.status(200).json({
+            message: 'Countries found',
+            data: result as Country[]
+        }))
         .catch((err: any) => {
         return res.status(500).json({
             message: 'Server error',
@@ -83,7 +86,10 @@ const getCountry = (req: Request, res: Response) => {
                     message: 'Country not found'
                 });
             } else {
-                return res.status(200).json(result as Country[]);
+                return res.status(200).json({
+                        message: 'Country found',
+                        data: result[0] as Country
+                });
             }
         });
 }
@@ -103,7 +109,10 @@ const searchCountry = (req: Request, res: Response) => {
                     message: 'Country not found'
                 });
             } else {
-                return res.status(200).json(result as Country[]);
+                return res.status(200).json({
+                    message: 'Country found',
+                    data: result as Country[]
+                });
             }
         });
 }
