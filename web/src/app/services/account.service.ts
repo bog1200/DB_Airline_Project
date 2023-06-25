@@ -46,6 +46,9 @@ export class AccountService {
   login(email: string, password: string): Observable<MessageSingle<Account>> {
     return this.http.post<MessageSingle<Account>>(this.url + '/login', {email, password});
   }
+  loginExternal(code: string): Observable<MessageSingle<Account>> {
+    return this.http.get<MessageSingle<Account>>(this.url + '/loginExternal?code=' + code);
+  }
 
   logout(): void {
     localStorage.removeItem('user');

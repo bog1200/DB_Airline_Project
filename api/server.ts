@@ -3,6 +3,8 @@ import express, { Express } from 'express';
 import morgan from 'morgan';
 import v1 from './v1';
 import v1docs from './v1/docs';
+import v2 from './v2';
+import v2docs from './v2/docs';
 
 
 const router: Express = express();
@@ -31,6 +33,9 @@ router.use((req, res, next) => {
 /** Routes */
 router.use('/api/v1/', v1);
 router.use('/api/v1/docs',v1docs);
+
+router.use('/api/v2/', v2);
+router.use('/api/v2/docs',v2docs);
 
 /** Error handling */
 router.use((req, res, next) => {

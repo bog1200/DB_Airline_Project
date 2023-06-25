@@ -5,6 +5,7 @@ import {FlightSearchResultsComponent} from "./components/flight-search-results/f
 import {LoginPageComponent} from "./components/login-page/login-page.component";
 import {RegisterPageComponent} from "./components/register-page/register-page.component";
 import {PurchasePageComponent} from "./components/purchase-page/purchase-page.component";
+import {CallbackPageComponent} from "./components/callback-page/callback-page.component";
 
 const routes: Routes = [
   { path: '', component: LandingPage },
@@ -12,6 +13,7 @@ const routes: Routes = [
   { path: 'login', component: LoginPageComponent },
   { path: 'register', component: RegisterPageComponent },
   { path: 'purchase', component: PurchasePageComponent },
+  { path: 'callback', component: CallbackPageComponent },
   { path: '**', redirectTo: ''}
 
 ];

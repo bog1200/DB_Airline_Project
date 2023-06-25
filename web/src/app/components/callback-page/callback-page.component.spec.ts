@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { LandingPage } from './landing-page';
+import { CallbackPageComponent } from './callback-page.component';
 import {HttpClientTestingModule} from "@angular/common/http/testing";
 
-describe('LandingPage', () => {
-  let component: LandingPage;
-  let fixture: ComponentFixture<LandingPage>;
+describe('CallbackPageComponent', () => {
+  let component: CallbackPageComponent;
+  let fixture: ComponentFixture<CallbackPageComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ LandingPage ],
+      declarations: [ CallbackPageComponent ],
       imports: [HttpClientTestingModule]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(LandingPage);
+    fixture = TestBed.createComponent(CallbackPageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

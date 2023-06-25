@@ -12,6 +12,7 @@ import {FlightCardModule} from "./components/flight-card/flight-card.module";
 import { RegisterPageComponent } from './components/register-page/register-page.component';
 import {PurchasePageComponent} from "./components/purchase-page/purchase-page.component";
 import { PassengerInputComponent } from './components/passenger-input/passenger-input.component';
+import { CallbackPageComponent } from './components/callback-page/callback-page.component';
 
 
 @NgModule({
@@ -23,6 +24,7 @@ import { PassengerInputComponent } from './components/passenger-input/passenger-
     RegisterPageComponent,
     PurchasePageComponent,
     PassengerInputComponent,
+    CallbackPageComponent,
   ],
   imports: [
     BrowserModule,

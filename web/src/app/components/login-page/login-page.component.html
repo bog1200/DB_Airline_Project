@@ -26,12 +26,15 @@
             <div>
                 <input id="login-button" type="submit" class="btn" [disabled]="!loginForm.valid" (click)="login()" value="Log in">
             </div>
+          <div>
+            <input id="idp-login-button" type="button" class="btn"  (click)="loginRemote()" value="Log in With Romail.app">
+          </div>
             <div *ngIf="error">
                 <p>{{error}}</p>
             </div>
 
         </form>
-          <p>If you don't have an account, you can create one by pressing here: <a id="register-button" routerLink="/register">Register</a></p>
+          <p>If you don't have an account, you can create one <s> by pressing here: Register</s> on <a href="https://auth.romail.app/sso/register">Romail.app</a></p>
       </div>
     </div>
 

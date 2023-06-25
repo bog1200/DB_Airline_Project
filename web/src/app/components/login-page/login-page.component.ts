@@ -3,6 +3,7 @@ import {AccountService} from "../../services/account.service";
 import {Router} from "@angular/router";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {Location} from "@angular/common";
+import {environment} from "../../../environments/environment";
 
 @Component({
   selector: 'login-page',
@@ -23,6 +24,8 @@ export class LoginPageComponent implements OnInit{
 
     ngOnInit(): void {
         if(this.accountService.getAccount != null){
+            console.log("already logged in");
+            console.log(this.accountService.getAccount);
             this.router.navigate(['/']).then(r => console.log(r));
         }
         let emailControl= new FormControl('', [
@@ -71,4 +74,9 @@ export class LoginPageComponent implements OnInit{
            }
          });
     }
+
+  loginRemote() {
+    window.location.href = "https://auth.romail.app/sso/login?redirect_uri=" + window.location.origin +"/callback&client_id="+ environment.clientId+"&response_type=code";
+
+  }
 }
