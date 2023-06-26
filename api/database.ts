@@ -41,7 +41,12 @@ function query(query: string, values?: any) {
     });
 }
 
-
+query('SELECT 1 + 1 AS solution').then((result: any) => {
+    console.log('MySQL connected');
+}).catch((err: any) => {
+    console.log('MySQL connection error');
+    console.log(err);
+});
 
 
 

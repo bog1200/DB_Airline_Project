@@ -1,6 +1,9 @@
 import http from 'http';
 import express, { Express } from 'express';
 import morgan from 'morgan';
+import dotenv from 'dotenv';
+dotenv.config();
+
 import v1 from './v1';
 import v1docs from './v1/docs';
 import v2 from './v2';
