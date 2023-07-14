@@ -112,7 +112,7 @@ To get started with the REST API, you need to have [Node.js](https://nodejs.org/
 
 ```bash
 git clone https://github.com/bog1200/DB_Airline_Project.git
-cd DB_Airline_Project
+cd DB_Airline_Project\api
 npm install .
 ```
 
@@ -167,7 +167,7 @@ This project follows the [OpenAPI Specification](https://swagger.io/specificatio
 
 | Version  | Current Status | Notes |
 |----------|----------------|-------|
-| 2        | Planned        |       |
+| 2        | In progress    |       |
 | 1        | Done           |       |
 
 

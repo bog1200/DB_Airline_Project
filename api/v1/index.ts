@@ -39,7 +39,7 @@ router.use('/tickets', tickets);
 router.use('/employees', employees);
 router.use('/ticket/payments', ticket_payments);
 router.use('/ticket/payment/cards', ticket_payment_card);
-router.use('/ticket/payment/methods', ticket_payment_methods)
+router.use('/ticket/payment/methods', ticket_payment_methods);
 router.use('/passengers', passengers);
 router.use('/airplane/manufacturers', airplane_manufacturer);
 router.use('/airplane/types', airplane_types);

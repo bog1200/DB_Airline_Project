@@ -4,7 +4,6 @@
     "module": "commonjs",
     "esModuleInterop": true,
     "outDir": "./build",
-    "rootDir": "./api",
     "target": "es6",
     "skipLibCheck": true,
     "strict": true,
