@@ -30,8 +30,8 @@ export class CallbackPageComponent implements OnInit{
           const decodedToken = helper.decodeToken(account.access_token);
           account.uuid = decodedToken.sub;
           account.email = decodedToken.email;
-          account.first_name = decodedToken.first_name || "SSO User "+ decodedToken.sub.split('-')[4];
-          account.last_name = decodedToken.last_name;
+          account.first_name = decodedToken.given_name || "SSO User "+ decodedToken.sub.split('-')[4];
+          account.last_name = decodedToken.family_name;
           // save account to local storage
           localStorage.setItem('user', JSON.stringify(account));
           // set account in account service
